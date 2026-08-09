@@ -1,26 +1,242 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════
+   ENGINEERING CANVAS — DESIGN TOKENS
+═══════════════════════════════════════════════ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Canvas backgrounds */
+  --canvas-bg:    #0A0D12;
+  --frame-bg:     #0E1420;
+  --surface:      rgba(14, 22, 38, 0.85);
+  --surface-2:    rgba(20, 32, 54, 0.75);
+
+  /* Structural diagram linework — always very pale */
+  --diagram:      rgba(148, 163, 184, 0.12);
+  --diagram-hi:   rgba(148, 163, 184, 0.22);
+
+  /* Accent — pale desaturated cyan only, used sparingly */
+  --cyan-pale:    #A8D8F0;
+  --cyan-mid:     #7FB9DC;
+  --cyan-stroke:  rgba(168, 216, 240, 0.35);
+  --cyan-glow:    rgba(127, 185, 220, 0.15);
+
+  /* Typography */
+  --text-primary: #E2E8F0;
+  --text-sub:     #94A3B8;
+  --text-muted:   #4A5568;
+  --text-mono:    #7FB9DC;
+
+  /* Borders */
+  --border:       rgba(148, 163, 184, 0.1);
+  --border-hi:    rgba(168, 216, 240, 0.3);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--canvas-bg);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom scrollbar — thin, dark */
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--canvas-bg); }
+::-webkit-scrollbar-thumb { background: #1E2A3A; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #2A3A52; }
+
+/* ═══════════════════════════════════════════════
+   ENGINEERING CANVAS UTILITIES
+═══════════════════════════════════════════════ */
+
+/* Monospace metric display */
+.mono {
+  font-family: 'Space Grotesk', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* HUD eyebrow label */
+.hud-label {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hud-label.active {
+  color: var(--cyan-pale);
+}
+
+/* Pale stat badge */
+.stat-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.stat-badge .stat-value {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--cyan-pale);
+  line-height: 1.1;
+}
+.stat-badge .stat-label {
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* Signal line (thin SVG-style connector) */
+.signal-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, var(--cyan-stroke), transparent);
+  height: 1px;
+  pointer-events: none;
+}
+
+/* Tag pill */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-sub);
+  border: 1px solid var(--border);
+  background: rgba(14, 20, 32, 0.6);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease, color 0.2s ease;
+  cursor: default;
+  white-space: nowrap;
+}
+.tag-pill:hover {
+  border-color: var(--border-hi);
+  color: var(--cyan-pale);
+}
+
+/* Node card — project / experience */
+.node-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.node-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--cyan-glow) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.node-card:hover {
+  border-color: var(--border-hi);
+  box-shadow: 0 0 24px var(--cyan-glow), inset 0 0 0 1px var(--border-hi);
+}
+.node-card:hover::before {
+  opacity: 1;
+}
+
+/* Pale cyan CTA — WhatsApp / primary action */
+.cta-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid var(--cyan-stroke);
+  color: var(--cyan-pale);
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: rgba(168, 216, 240, 0.04);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.cta-node::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(168,216,240,0.08) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.cta-node:hover {
+  background: rgba(168, 216, 240, 0.08);
+  box-shadow: 0 0 20px rgba(168, 216, 240, 0.12), 0 0 40px rgba(168, 216, 240, 0.06);
+  color: #C8E8F8;
+}
+.cta-node:hover::after {
+  opacity: 1;
+}
+
+/* Coordinate label */
+.coord-label {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Frame grid — absolute positioned spatial layout */
+.frame-grid {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Pulse dot */
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan-pale);
+  box-shadow: 0 0 8px var(--cyan-mid);
+  animation: pulse-anim 2.4s ease-in-out infinite;
+}
+@keyframes pulse-anim {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50%       { opacity: 1;   transform: scale(1.1); }
+}
+
+/* ═══════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
