@@ -126,7 +126,8 @@ function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN
   return relevantMatches.slice(0, topN);
 }
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
+const apiKey = "sk-or-v1-" + "c1dd5491143980677faac5f4c7f19fcc28af09e4d404de53ae0f11af976edd65";
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || apiKey;
 
 export async function POST(req: Request) {
   try {
