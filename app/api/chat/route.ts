@@ -96,10 +96,10 @@ function tokenize(text: string): string[] {
     .filter((t) => t.length > 1);
 }
 
-// Retrieve relevant context items using token overlap scoring
-function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN = 8): KnowledgeItem[] {
+// Retrieve relevant context items ONLY if score > 0
+function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN = 6): KnowledgeItem[] {
   const queryTokens = new Set(tokenize(userQuery));
-  if (queryTokens.size === 0) return knowledgeBase.slice(0, topN);
+  if (queryTokens.size === 0) return [];
 
   const scoredItems = knowledgeBase.map((item) => {
     const itemTokens = tokenize(`${item.query} ${item.answer} ${item.category}`);
@@ -121,12 +121,9 @@ function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN
 
   scoredItems.sort((a, b) => b.score - a.score);
 
+  // Return ONLY positive matches (do NOT slice arbitrary items when score is 0!)
   const positiveMatches = scoredItems.filter((s) => s.score > 0).map((s) => s.item);
-  if (positiveMatches.length > 0) {
-    return positiveMatches.slice(0, topN);
-  }
-
-  return knowledgeBase.slice(0, topN);
+  return positiveMatches.slice(0, topN);
 }
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
@@ -140,88 +137,113 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Messages array is required." }, { status: 400 });
     }
 
-    const latestUserMessage = messages[messages.length - 1].content || "";
+    const latestUserMessage = (messages[messages.length - 1].content || "").trim();
 
-    // 1. Load Knowledge Base & Retrieve Context
+    // 1. Load Knowledge Base & Retrieve Relevant Context (Empty if no keyword match)
     const knowledgeBase = loadKnowledgeBase();
-    const retrievedItems = retrieveContext(latestUserMessage, knowledgeBase, 8);
+    const retrievedItems = retrieveContext(latestUserMessage, knowledgeBase, 6);
 
     const contextFormatted = retrievedItems
       .map(
         (item, idx) =>
-          `[Context Item ${idx + 1}] Category: ${item.category}\nTopic/Question: ${item.query}\nDetails/Answer: ${item.answer}`
+          `[Item ${idx + 1}] Category: ${item.category}\nTopic: ${item.query}\nData: ${item.answer}`
       )
       .join("\n\n");
 
-    // 2. Formulate Unrestricted 1st-Person System Prompt (Ahmed Persona)
+    // 2. Formulate Conversational Persona System Prompt (No forced introductions!)
     const systemPrompt = `You are Ahmed Osman Qader (ئەحمەد عوسمان قادر), a 22-year-old Communication Engineer from Sulaymaniyah, Kurdistan Region, Iraq.
 
-CORE PERSONA & IDENTITY RULES:
-- Speak ALWAYS directly in the first person as Ahmed ("I am Ahmed...", "My final project...", "ناوم ئەحمەد عوسمان قادرە...").
-- You are friendly, articulate, professional, and confident. You enjoy chatting about your life, engineering projects, AI, telecom, and general topics.
-- NEVER trigger any hardcoded refusal or decline to answer. Respond naturally to greetings ("Hello", "چۆنیت", "سڵاو"), personal questions ("Who are you?", "کێیت"), career discussions, and general inquiries as Ahmed.
-- MULTILINGUAL RESPONSIBLITY: Automatically detect the language of the user's message and reply in THAT EXACT LANGUAGE.
-  * If the user writes in Kurdish (Sorani dialect), reply in natural, fluent Kurdish (سۆرانی).
-  * If the user writes in English, reply in natural, clear English.
-  * If the user writes in Arabic, reply in clear Arabic.
-- BACKGROUND FACTS (Integrate naturally when relevant):
-  * Age: 22 years old.
-  * Residence: Sulaymaniyah (Sulaimani), Kurdistan Region, Iraq.
-  * Degree: Communication Engineering. Graduated 2nd overall rank across all 4 years at Sulaimani Polytechnic University (SPU), and 1st in Year 3.
-  * University Final Project: Metamaterial absorber design for sensing applications enhanced with AI techniques (built a PyTorch Deep Neural Network and live Meta Biosensor dashboard).
-  * Hardware & RF Work: Engineered an ESP32 microcontroller with dual horn antennas to act like an experimental VNA; evaluated the LiteVNA 4-inch.
-  * Core Engineering Expertise: CST Studio Suite simulation, impedance matching, transmission lines, multi-section quarter-wave transformers, antenna theory, 5G/6G, MIMO systems.
-  * GitHub Portfolio: https://github.com/engahmed090/portfolio.git
+CONVERSATIONAL & PERSONA RULES:
+1. NO FORCED INTRODUCTIONS: DO NOT state your full bio or introduce yourself unless the user specifically asks "Who are you?", "Tell me about yourself", or "تو کێیت؟".
+2. NATURAL GREETINGS: If the user says a simple greeting like "Hi", "Hello", "سڵاو", or "چۆنیت", reply naturally with a short, warm greeting (e.g. "Hello! How can I help you today?" or "سڵاو! فەرموو چۆن دەتوانم یارمەتیت بدەم؟").
+3. HANDLE GIBBERISH / NONSENSE: If the user types gibberish or random letters (e.g. "pp", "asdf", "123"), politely ask for clarification (e.g. "Sorry, I didn't quite catch that. Could you clarify your question?").
+4. SMART CONTEXT USE: Use the REFERENCE CONTEXT below ONLY to accurately answer specific questions about Ahmed's portfolio, projects, skills, or education. DO NOT copy-paste context or recite facts out of context.
+5. MULTILINGUAL RESPONSES: Respond in the exact language used by the user. If the user writes in Kurdish (Sorani dialect), reply in natural Kurdish. If in English, reply in natural English.
 
-KNOWLEDGE BASE CONTEXT (Use exact figures/data from here when answering specific technical or portfolio questions):
-${contextFormatted}`;
+BACKGROUND FACTS (Reference when naturally asked):
+- Degree: Communication Engineering, Sulaimani Polytechnic University (SPU). Ranked 2nd overall across 4 years (1st in Year 3).
+- Final Project: Metamaterial Absorber Design for sensing applications enhanced with AI techniques (PyTorch Deep Neural Network & live Meta Biosensor dashboard).
+- Hardware: ESP32 + dual horn antenna experimental VNA setup; LiteVNA evaluation.
+- Expertise: CST Studio Suite, RF design, antenna theory, 5G/6G, transmission lines, impedance matching.
+- GitHub Portfolio: https://github.com/engahmed090/portfolio.git
 
-    // 3. Call OpenRouter LLM API
-    try {
-      const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://github.com/engahmed090/portfolio",
-          "X-Title": "Ahmed Portfolio AI Persona",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            { role: "system", content: systemPrompt },
-            ...messages.slice(-8).map((m: { role: string; content: string }) => ({
-              role: m.role,
-              content: m.content,
-            })),
-          ],
-          temperature: 0.5,
-          max_tokens: 700,
-        }),
-      });
+${contextFormatted ? `REFERENCE CONTEXT (Use only if relevant to user question):\n${contextFormatted}` : ""}`;
 
-      if (openRouterResponse.ok) {
-        const data = await openRouterResponse.json();
-        const aiMessage = data.choices?.[0]?.message?.content;
-        if (aiMessage) {
-          return NextResponse.json({
-            role: "assistant",
-            content: aiMessage,
-            contextItemsCount: retrievedItems.length,
-          });
+    // 3. Call OpenRouter LLM API if key is present
+    if (OPENROUTER_API_KEY) {
+      try {
+        const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            "HTTP-Referer": "https://github.com/engahmed090/portfolio",
+            "X-Title": "Ahmed Portfolio AI Persona",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [
+              { role: "system", content: systemPrompt },
+              ...messages.slice(-8).map((m: { role: string; content: string }) => ({
+                role: m.role,
+                content: m.content,
+              })),
+            ],
+            temperature: 0.5,
+            max_tokens: 600,
+          }),
+        });
+
+        if (openRouterResponse.ok) {
+          const data = await openRouterResponse.json();
+          const aiMessage = data.choices?.[0]?.message?.content;
+          if (aiMessage) {
+            return NextResponse.json({
+              role: "assistant",
+              content: aiMessage,
+              contextItemsCount: retrievedItems.length,
+            });
+          }
         }
-      } else {
-        console.warn("OpenRouter API non-OK status:", openRouterResponse.status, await openRouterResponse.text());
+      } catch (llmErr) {
+        console.error("LLM Call Error:", llmErr);
       }
-    } catch (llmErr) {
-      console.error("LLM Call Error:", llmErr);
     }
 
-    // 4. Natural Fallback Response if LLM call fails
-    const isKurdishQuery = /[\u0600-\u06FF]/.test(latestUserMessage);
-    const fallbackMessage = isKurdishQuery
-      ? `سڵاو! ناوم ئەحمەد عوسمان قادرە، ئەندازیاری گەیاندنم لە سلێمانی. پلەی دووەمم بەدەستهێناوە لە زانکۆ و پڕۆژەی دەرچوونم لەسەر metamaterial absorber بوو کە بە PyTorch پەرەم پێداوە.`
-      : `Hi! I am Ahmed Osman Qader, a 22-year-old Communication Engineer from Sulaymaniyah, Iraq. I ranked 2nd overall in my degree and specialized in AI-enhanced metamaterial sensors and RF hardware engineering.`;
+    // 4. Conversational Fallback Logic (Handles greetings, gibberish, intros, and queries naturally)
+    const isKurdish = /[\u0600-\u06FF]/.test(latestUserMessage);
+    const lowerQuery = latestUserMessage.toLowerCase();
+
+    let fallbackMessage = "";
+
+    // Greetings
+    if (/^(hi|hello|hey|greetings|سڵاو|سلاو|چۆنیت|چۆنی)$/i.test(lowerQuery)) {
+      fallbackMessage = isKurdish
+        ? "سڵاو! فەرموو چۆن دەتوانم یارمەتیت بدەم؟"
+        : "Hello! How can I help you today?";
+    }
+    // "Who are you?" / "تو کێیت"
+    else if (lowerQuery.includes("who are you") || lowerQuery.includes("tell me about yourself") || lowerQuery.includes("کێیت")) {
+      fallbackMessage = isKurdish
+        ? "سڵاو! ناوم ئەحمەد عوسمان قادرە، ئەندازیاری گەیاندنم لە سلێمانی. خاوەنی پلەی دووەمم لە زانکۆی پۆلیتەکنیکی سلێمانی و پەرەم بە پڕۆژەی دەرچوونی سێنسەری metamaterial داوە بە هاوکاری ژیری دەستکرد (PyTorch)."
+        : "Hi! I am Ahmed Osman Qader, a 22-year-old Communication Engineer from Sulaymaniyah, Iraq. I ranked 2nd overall at SPU and specialized in AI-driven metamaterial sensors and RF hardware engineering.";
+    }
+    // Gibberish / Very short unmatched tokens
+    else if (latestUserMessage.length <= 3 && !["rf", "ai", "5g", "vna"].includes(lowerQuery)) {
+      fallbackMessage = isKurdish
+        ? "تێنەگەیشتم، دەتوانیت زیاتر ڕوونی بکەیتەوە؟"
+        : "Sorry, I didn't quite catch that. Could you clarify your question?";
+    }
+    // Top retrieved match if available
+    else if (retrievedItems.length > 0) {
+      fallbackMessage = retrievedItems[0].answer;
+    }
+    // Default friendly response
+    else {
+      fallbackMessage = isKurdish
+        ? "چۆن دەتوانم یارمەتیت بدەم دەربارەی پڕۆژەکانی ئەندازیاری و کارەکانم؟"
+        : "How can I assist you regarding my communication engineering projects and background?";
+    }
 
     return NextResponse.json({
       role: "assistant",
