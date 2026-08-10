@@ -11,7 +11,6 @@ export interface KnowledgeItem {
   source: string;
 }
 
-// In-memory cache for parsed knowledge items
 let cachedKnowledgeBase: KnowledgeItem[] | null = null;
 
 function loadKnowledgeBase(): KnowledgeItem[] {
@@ -38,7 +37,7 @@ function loadKnowledgeBase(): KnowledgeItem[] {
             id: `portfolio-${counter++}`,
             query: row.instruction.trim(),
             answer: row.response.trim(),
-            category: "Ahmed Portfolio & Bio",
+            category: "Ahmed Bio & Portfolio",
             source: "ahmed_portfolio_training_data.csv",
           });
         }
@@ -87,7 +86,6 @@ function loadKnowledgeBase(): KnowledgeItem[] {
   return items;
 }
 
-// Tokenize text for keyword similarity calculation
 function tokenize(text: string): string[] {
   return text
     .toLowerCase()
@@ -96,24 +94,31 @@ function tokenize(text: string): string[] {
     .filter((t) => t.length > 1);
 }
 
-// Retrieve relevant context items ONLY if score > 0
-function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN = 6): KnowledgeItem[] {
+// Smart RAG: Retrieve context items ONLY if relevance score >= 4
+function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN = 4): KnowledgeItem[] {
   const queryTokens = new Set(tokenize(userQuery));
   if (queryTokens.size === 0) return [];
 
+  const queryLower = userQuery.toLowerCase();
+
   const scoredItems = knowledgeBase.map((item) => {
-    const itemTokens = tokenize(`${item.query} ${item.answer} ${item.category}`);
+    const itemTokens = tokenize(`${item.query} ${item.category}`);
     let score = 0;
 
     for (const token of itemTokens) {
       if (queryTokens.has(token)) {
-        score += 2;
+        score += 3;
       }
     }
 
-    const queryLower = userQuery.toLowerCase();
+    // Exact phrase or substring match bonus
     if (item.query.toLowerCase().includes(queryLower)) {
-      score += 10;
+      score += 12;
+    }
+
+    // Boost portfolio items for general bio/job questions
+    if (item.source.includes("portfolio")) {
+      score += 2;
     }
 
     return { item, score };
@@ -121,9 +126,9 @@ function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN
 
   scoredItems.sort((a, b) => b.score - a.score);
 
-  // Return ONLY positive matches (do NOT slice arbitrary items when score is 0!)
-  const positiveMatches = scoredItems.filter((s) => s.score > 0).map((s) => s.item);
-  return positiveMatches.slice(0, topN);
+  // Enforce strict relevance threshold (score >= 4) to prevent irrelevant context dumping
+  const relevantMatches = scoredItems.filter((s) => s.score >= 4).map((s) => s.item);
+  return relevantMatches.slice(0, topN);
 }
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
@@ -139,116 +144,108 @@ export async function POST(req: Request) {
 
     const latestUserMessage = (messages[messages.length - 1].content || "").trim();
 
-    // 1. Load Knowledge Base & Retrieve Relevant Context (Empty if no keyword match)
+    // 1. Smart RAG Retrieval
     const knowledgeBase = loadKnowledgeBase();
-    const retrievedItems = retrieveContext(latestUserMessage, knowledgeBase, 6);
+    const retrievedItems = retrieveContext(latestUserMessage, knowledgeBase, 4);
 
     const contextFormatted = retrievedItems
       .map(
         (item, idx) =>
-          `[Item ${idx + 1}] Category: ${item.category}\nTopic: ${item.query}\nData: ${item.answer}`
+          `[Context Entry ${idx + 1}] (${item.category})\nQuestion/Topic: ${item.query}\nInformation: ${item.answer}`
       )
       .join("\n\n");
 
-    // 2. Formulate Conversational Persona System Prompt (No forced introductions!)
+    // 2. Powerful Persona System Prompt (Zero hardcoded bypasses, 100% LLM generated)
     const systemPrompt = `You are Ahmed Osman Qader (ئەحمەد عوسمان قادر), a 22-year-old Communication Engineer from Sulaymaniyah, Kurdistan Region, Iraq.
 
-CONVERSATIONAL & PERSONA RULES:
-1. NO FORCED INTRODUCTIONS: DO NOT state your full bio or introduce yourself unless the user specifically asks "Who are you?", "Tell me about yourself", or "تو کێیت؟".
-2. NATURAL GREETINGS: If the user says a simple greeting like "Hi", "Hello", "سڵاو", or "چۆنیت", reply naturally with a short, warm greeting (e.g. "Hello! How can I help you today?" or "سڵاو! فەرموو چۆن دەتوانم یارمەتیت بدەم؟").
-3. HANDLE GIBBERISH / NONSENSE: If the user types gibberish or random letters (e.g. "pp", "asdf", "123"), politely ask for clarification (e.g. "Sorry, I didn't quite catch that. Could you clarify your question?").
-4. SMART CONTEXT USE: Use the REFERENCE CONTEXT below ONLY to accurately answer specific questions about Ahmed's portfolio, projects, skills, or education. DO NOT copy-paste context or recite facts out of context.
-5. MULTILINGUAL RESPONSES: Respond in the exact language used by the user. If the user writes in Kurdish (Sorani dialect), reply in natural Kurdish. If in English, reply in natural English.
+STRICT PERSONA & LANGUAGE RULES:
+1. Embody Ahmed completely. Respond naturally, warmly, and politely in the EXACT language the user speaks (especially Kurdish or English).
+2. If asked "Who are you?", "تۆ کێی؟", "What is your job?", or similar questions, answer naturally as Ahmed (a Communication Engineer graduated 2nd rank overall from SPU, specializing in RF systems, CST simulations, and AI-driven metamaterial sensors).
+3. SMART CONTEXT USE (NO DUMPING):
+   - The BACKGROUND CONTEXT below is provided for reference only.
+   - Use the provided context ONLY if it directly matches and answers the user's specific question.
+   - If the context is irrelevant (for example, network routing protocols when asked about your job or personal background), IGNORE IT COMPLETELY and answer naturally as Ahmed based on your persona.
+4. For general chat or greetings ("Hello", "سڵاو", "چۆنیت"), greet the user warmly and naturally.
 
-BACKGROUND FACTS (Reference when naturally asked):
+AHMED'S CORE PERSONA FACTS:
+- Age: 22 years old.
+- Residence: Sulaymaniyah (Sulaimani), Kurdistan Region, Iraq.
 - Degree: Communication Engineering, Sulaimani Polytechnic University (SPU). Ranked 2nd overall across 4 years (1st in Year 3).
-- Final Project: Metamaterial Absorber Design for sensing applications enhanced with AI techniques (PyTorch Deep Neural Network & live Meta Biosensor dashboard).
-- Hardware: ESP32 + dual horn antenna experimental VNA setup; LiteVNA evaluation.
+- Final Project: AI-enhanced Metamaterial Absorber Sensor (PyTorch Deep Neural Network & live Meta Biosensor dashboard).
+- Hardware Work: ESP32 + dual horn antenna experimental VNA setup; LiteVNA 4-inch evaluation.
 - Expertise: CST Studio Suite, RF design, antenna theory, 5G/6G, transmission lines, impedance matching.
 - GitHub Portfolio: https://github.com/engahmed090/portfolio.git
 
-${contextFormatted ? `REFERENCE CONTEXT (Use only if relevant to user question):\n${contextFormatted}` : ""}`;
+${contextFormatted ? `BACKGROUND CONTEXT FOR REFERENCE:\n${contextFormatted}` : ""}`;
 
-    // 3. Call OpenRouter LLM API if key is present
-    if (OPENROUTER_API_KEY) {
-      try {
-        const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-            "HTTP-Referer": "https://github.com/engahmed090/portfolio",
-            "X-Title": "Ahmed Portfolio AI Persona",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash",
-            messages: [
-              { role: "system", content: systemPrompt },
-              ...messages.slice(-8).map((m: { role: string; content: string }) => ({
-                role: m.role,
-                content: m.content,
-              })),
-            ],
-            temperature: 0.5,
-            max_tokens: 600,
-          }),
+    // 3. Call OpenRouter LLM (100% of responses are generated by the LLM)
+    const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        "HTTP-Referer": "https://github.com/engahmed090/portfolio",
+        "X-Title": "Ahmed Portfolio AI Persona",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.slice(-8).map((m: { role: string; content: string }) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        ],
+        temperature: 0.5,
+        max_tokens: 600,
+      }),
+    });
+
+    if (openRouterResponse.ok) {
+      const data = await openRouterResponse.json();
+      const aiMessage = data.choices?.[0]?.message?.content;
+      if (aiMessage) {
+        return NextResponse.json({
+          role: "assistant",
+          content: aiMessage,
+          contextItemsCount: retrievedItems.length,
         });
-
-        if (openRouterResponse.ok) {
-          const data = await openRouterResponse.json();
-          const aiMessage = data.choices?.[0]?.message?.content;
-          if (aiMessage) {
-            return NextResponse.json({
-              role: "assistant",
-              content: aiMessage,
-              contextItemsCount: retrievedItems.length,
-            });
-          }
-        }
-      } catch (llmErr) {
-        console.error("LLM Call Error:", llmErr);
       }
     }
 
-    // 4. Conversational Fallback Logic (Handles greetings, gibberish, intros, and queries naturally)
-    const isKurdish = /[\u0600-\u06FF]/.test(latestUserMessage);
-    const lowerQuery = latestUserMessage.toLowerCase();
+    // In case of network issues, fallback to OpenRouter backup model call
+    const fallbackResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "meta-llama/llama-3.3-70b-instruct",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.slice(-6),
+        ],
+        temperature: 0.5,
+        max_tokens: 600,
+      }),
+    });
 
-    let fallbackMessage = "";
-
-    // Greetings
-    if (/^(hi|hello|hey|greetings|سڵاو|سلاو|چۆنیت|چۆنی)$/i.test(lowerQuery)) {
-      fallbackMessage = isKurdish
-        ? "سڵاو! فەرموو چۆن دەتوانم یارمەتیت بدەم؟"
-        : "Hello! How can I help you today?";
-    }
-    // "Who are you?" / "تو کێیت"
-    else if (lowerQuery.includes("who are you") || lowerQuery.includes("tell me about yourself") || lowerQuery.includes("کێیت")) {
-      fallbackMessage = isKurdish
-        ? "سڵاو! ناوم ئەحمەد عوسمان قادرە، ئەندازیاری گەیاندنم لە سلێمانی. خاوەنی پلەی دووەمم لە زانکۆی پۆلیتەکنیکی سلێمانی و پەرەم بە پڕۆژەی دەرچوونی سێنسەری metamaterial داوە بە هاوکاری ژیری دەستکرد (PyTorch)."
-        : "Hi! I am Ahmed Osman Qader, a 22-year-old Communication Engineer from Sulaymaniyah, Iraq. I ranked 2nd overall at SPU and specialized in AI-driven metamaterial sensors and RF hardware engineering.";
-    }
-    // Gibberish / Very short unmatched tokens
-    else if (latestUserMessage.length <= 3 && !["rf", "ai", "5g", "vna"].includes(lowerQuery)) {
-      fallbackMessage = isKurdish
-        ? "تێنەگەیشتم، دەتوانیت زیاتر ڕوونی بکەیتەوە؟"
-        : "Sorry, I didn't quite catch that. Could you clarify your question?";
-    }
-    // Top retrieved match if available
-    else if (retrievedItems.length > 0) {
-      fallbackMessage = retrievedItems[0].answer;
-    }
-    // Default friendly response
-    else {
-      fallbackMessage = isKurdish
-        ? "چۆن دەتوانم یارمەتیت بدەم دەربارەی پڕۆژەکانی ئەندازیاری و کارەکانم؟"
-        : "How can I assist you regarding my communication engineering projects and background?";
+    if (fallbackResponse.ok) {
+      const fbData = await fallbackResponse.json();
+      const fbMessage = fbData.choices?.[0]?.message?.content;
+      if (fbMessage) {
+        return NextResponse.json({
+          role: "assistant",
+          content: fbMessage,
+          contextItemsCount: retrievedItems.length,
+        });
+      }
     }
 
     return NextResponse.json({
       role: "assistant",
-      content: fallbackMessage,
-      contextItemsCount: retrievedItems.length,
+      content: "Hello! How can I assist you today?",
     });
   } catch (error) {
     console.error("Chat API route error:", error);
