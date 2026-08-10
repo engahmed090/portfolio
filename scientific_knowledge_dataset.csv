@@ -1,0 +1,56 @@
+﻿domain,topic,input,output,unit,source
+Telecommunications,RBS architecture,What are the main functional blocks of a Huawei-style RBS?,"Radio Unit (RU/RRU), Digital Unit (DU), power supply and power distribution components are core functional blocks. The DU may contain technology-specific processing such as GSM, WCDMA and LTE functions.",categorical,user-provided technical notes
+Telecommunications,RBS power,What DC supply is commonly used in the referenced RBS notes?,-48 V DC.,V DC,user-provided technical notes
+Mobile Communications,2G bandwidth,What channel bandwidth was recorded for GSM in the user's notes?,200 kHz,kHz,user-provided technical notes
+Mobile Communications,3G bandwidth,What channel bandwidth was recorded for WCDMA/3G?,5 MHz,MHz,user-provided technical notes
+Mobile Communications,4G bandwidth,What LTE bandwidths were recorded?,"5, 10 and 20 MHz",MHz,user-provided technical notes
+Mobile Communications,2G/3G frequency range,Which frequency range was recorded for 2G GSM and 3G WCDMA?,880–960 MHz,MHz,user-provided technical notes
+Mobile Communications,2G/4G frequency range,Which frequency range was recorded for 2G GSM and 4G LTE?,1710–1880 MHz,MHz,user-provided technical notes
+Mobile Communications,3G/4G band,Which frequency was recorded for 3G and 4G?,2100 MHz,MHz,user-provided technical notes
+5G,sub-6 GHz,What role does the referenced ~3.5 GHz band have in 5G?,It is used as a sub-6 GHz band where wider coverage and propagation are generally more favorable than at mmWave frequencies.,GHz,scientific summary based on user's seminar topic
+5G,mmWave,Which mmWave bands were included in the user's 5G/6G presentation?,"Approximately 24, 28, 39 and 60 GHz.",GHz,user-provided seminar notes
+6G,upper mmWave / THz,Which higher-frequency ranges were included in the user's presentation?,Approximately 90–140 GHz and 0.1–1 THz.,GHz/THz,user-provided seminar notes
+5G/6G,antenna technologies,Which antenna technologies were listed for advanced wireless systems?,"Phased arrays, Massive MIMO, AI-based beam tracking and reconfigurable antennas.",categorical,user-provided seminar notes
+Antenna Engineering,HPBW,What does HPBW mean?,Half-Power Beamwidth: the angular separation between the two directions where the radiation intensity is one-half of the peak value (−3 dB in power).,degrees,standard engineering definition
+Antenna Engineering,isotropic antenna,What is an isotropic radiator?,An ideal reference radiator that radiates equally in all directions.,categorical,standard engineering definition
+Antenna Engineering,dipole,What is a dipole antenna?,"A common wire antenna consisting of two conductive arms, often modeled as a center-fed half-wave radiator.",categorical,standard engineering definition
+Antenna Engineering,monopole,What is a monopole antenna?,"A radiator commonly formed as approximately one half of a dipole over a conducting ground plane, with the image principle used in analysis.",categorical,standard engineering definition
+Antenna Engineering,patch antenna,What is a microstrip patch antenna?,A planar printed antenna consisting of a conductive patch separated from a ground plane by a dielectric substrate.,categorical,standard engineering definition
+Digital Communications,FSK,What is FSK?,Frequency Shift Keying represents digital symbols using different carrier frequencies.,categorical,standard engineering definition
+Digital Communications,ASK,What is ASK?,Amplitude Shift Keying represents digital symbols using different carrier amplitudes.,categorical,standard engineering definition
+Digital Communications,PSK,What is PSK?,Phase Shift Keying represents digital symbols using different carrier phases.,categorical,standard engineering definition
+Digital Communications,QPSK,What is QPSK?,Quadrature Phase Shift Keying uses four phase states and can carry 2 bits per symbol under the usual Gray-coded mapping.,bits/symbol,standard engineering definition
+DSP,digital filtering,What is the purpose of a digital filter?,To selectively attenuate or pass components of a discrete-time signal according to frequency or other signal characteristics.,categorical,standard engineering definition
+MIMO,SISO,What is the SISO configuration used in the project?,1 transmit antenna × 1 receive antenna (1×1).,antennas,user-provided project specification
+MIMO,SIMO,What SIMO configuration was used?,"1 transmit antenna × 4 receive antennas (1×4), with MRC for BER analysis.",antennas,user-provided project specification
+MIMO,MISO,What MISO configuration was used?,"4 transmit antennas × 1 receive antenna (4×1), with MRT for BER analysis.",antennas,user-provided project specification
+MIMO,MIMO configurations,Which MIMO configurations were included?,"2×2, 4×4, 8×8 and 16×16.",antennas,user-provided project specification
+MIMO,channel model,What channel model was specified for the capacity/BER study?,Flat Rayleigh fading with AWGN.,categorical,user-provided project specification
+MIMO,CSI,What CSI assumption was used?,Perfect channel state information at the receiver.,categorical,user-provided project specification
+MIMO,SNR range,What SNR range was specified?,0 to 30 dB in 5 dB steps.,dB,user-provided MATLAB assignment notes
+MIMO,capacity,What was the capacity simulation target?,"Plot system capacity versus SNR for SISO, SIMO, MISO and MIMO configurations.",bits/s/Hz,user-provided MATLAB assignment notes
+MIMO,BER,What BER methods were specified?,"SISO, SIMO with MRC, MISO with MRT and MIMO with ZF detection using QPSK over Rayleigh fading with AWGN.",BER,user-provided MATLAB assignment notes
+Metamaterials,research project,What is the user's main metamaterial research project?,Design metamaterial absorber for sensing application enhanced with AI technique.,categorical,user-provided project description
+Metamaterials,dataset 1,How large was the referenced parametric THz metamaterial absorber dataset?,"9,018 simulated measurements.",samples,user-provided dataset description
+Metamaterials,dataset 1 columns,"What columns were listed in the 9,018-sample dataset?","p, m, Frequency, Absorptance.",categorical,user-provided dataset description
+Metamaterials,dataset 1 frequency,"What frequency range was reported for the 9,018-sample dataset?",0.0 to 18.0 (frequency units as represented in the source dataset).,source units,user-provided dataset description
+Metamaterials,dataset 2,How large was the second MMA THz dataset?,"37,525 records.",samples,user-provided dataset description
+Metamaterials,dataset 2 columns,What columns were listed in the second MMA THz dataset?,"a, hs, f, Absorption.",categorical,user-provided dataset description
+Metamaterials,dataset 2 frequency,What frequency range was reported for the second dataset?,13 to 16 THz.,THz,user-provided dataset description
+Machine Learning,Random Forest,Which regression model was previously used in the metamaterial project?,RandomForestRegressor was used for absorptance prediction experiments.,model,user-provided project history
+Deep Learning,planned model,What model family is now intended for the scientific dataset?,"Deep Neural Network (DNN) models for learning relationships between metamaterial parameters, frequency and absorption/absorptance.",model,current user request
+Scientific ML,forward model,What is forward modeling in the metamaterial project?,Predicting electromagnetic response such as resonance frequency or absorption from structural/material parameters.,mapping,project concept
+Scientific ML,inverse model,What is inverse modeling in the metamaterial project?,Estimating structural/material parameters that can produce a desired electromagnetic response.,mapping,project concept
+Computer Networks,RIPv2,What is RIPv2?,A distance-vector interior routing protocol using hop count as its primary metric and supporting classless routing information.,categorical,standard networking definition
+Computer Networks,OSPF,What is OSPF?,A link-state interior gateway routing protocol that computes shortest paths using a link-state database.,categorical,standard networking definition
+Computer Networks,IS-IS,What is IS-IS?,A link-state interior gateway routing protocol widely used in large service-provider and enterprise networks.,categorical,standard networking definition
+Computer Networks,EIGRP,What is EIGRP?,A Cisco-originated advanced distance-vector/hybrid routing protocol using the DUAL algorithm.,categorical,standard networking definition
+Computer Networks,BGP,What is BGP?,The principal inter-domain routing protocol used to exchange reachability information between autonomous systems.,categorical,standard networking definition
+Networking,private IPv4,What are the private IPv4 address ranges?,"10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16.",CIDR,standard networking definition
+GSM,HLR,What is HLR?,Home Location Register: a core-network database containing subscriber-related information and service/profile data.,network element,standard telecom definition
+GSM,VLR,What is VLR?,Visitor Location Register: a temporary database associated with subscribers currently served by a mobile switching area.,network element,standard telecom definition
+GSM,EIR,What is EIR?,Equipment Identity Register: a database used for mobile equipment identity checking.,network element,standard telecom definition
+GSM,AuC,What is AuC?,Authentication Center: a GSM core-network function supporting subscriber authentication and security-related parameter generation.,network element,standard telecom definition
+GSM,MSC,What is MSC?,Mobile Switching Center: a circuit-switched core-network switching function for mobile services.,network element,standard telecom definition
+Telecom,VoLTE,What is VoLTE?,Voice over LTE: packet-switched voice service delivered over an LTE network using IMS architecture.,technology,standard telecom definition
+Telecom,VoIP,What is VoIP?,Voice over Internet Protocol: voice communication transported using IP networks.,technology,standard networking definition

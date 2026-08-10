@@ -5,9 +5,9 @@ import { Sound } from "./SoundSystem";
 
 export const FRAMES = [
   { id: "01", label: "IDENTITY", href: "#frame-01" },
-  { id: "02", label: "METRICS",  href: "#frame-02" },
+  { id: "02", label: "METRICS", href: "#frame-02" },
   { id: "03", label: "PROJECTS", href: "#frame-03" },
-  { id: "04", label: "CONTACT",  href: "#frame-04" },
+  { id: "04", label: "CONTACT", href: "#frame-04" },
 ] as const;
 
 interface HUDNavProps {
@@ -19,27 +19,10 @@ export default function HUDNav({ activeFrame, onFrameSelect }: HUDNavProps) {
   return (
     <nav
       aria-label="Frame navigation"
-      style={{
-        position: "fixed",
-        top: "1.5rem",
-        right: "1.75rem",
-        zIndex: 1000,
-        display: "flex",
-        flexDirection: "column",
-        gap: "6px",
-        alignItems: "flex-end",
-      }}
+      className="fixed top-3 right-3 sm:top-6 sm:right-7 z-[900] flex flex-col items-end gap-1 select-none"
     >
       {/* Top-right logo / identity marker */}
-      <div
-        className="mono"
-        style={{
-          fontSize: "0.58rem",
-          letterSpacing: "0.2em",
-          color: "var(--text-muted)",
-          marginBottom: "10px",
-        }}
-      >
+      <div className="mono text-[9px] sm:text-[10px] tracking-[0.2em] text-slate-400 mb-1">
         AOQ
       </div>
 
@@ -57,43 +40,24 @@ export default function HUDNav({ activeFrame, onFrameSelect }: HUDNavProps) {
             aria-label={`Navigate to frame ${frame.id}: ${frame.label}`}
             aria-current={isActive ? "page" : undefined}
             initial={false}
-            animate={{
-              opacity: isActive ? 1 : 0.4,
-            }}
+            animate={{ opacity: isActive ? 1 : 0.4 }}
             whileHover={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: "3px 0",
-              color: isActive ? "var(--cyan-pale)" : "var(--text-muted)",
-            }}
+            className={`flex items-center gap-2 bg-transparent border-none cursor-pointer py-0.5 px-0 text-[10px] sm:text-xs font-mono tracking-wider uppercase ${
+              isActive ? "text-cyan-300" : "text-slate-400"
+            }`}
           >
-            {/* Active indicator dot */}
+            {/* Active indicator line */}
             <motion.div
               animate={{
-                width: isActive ? "20px" : "6px",
-                background: isActive ? "var(--cyan-pale)" : "var(--text-muted)",
+                width: isActive ? "18px" : "5px",
+                background: isActive ? "#67e8f9" : "#64748b",
               }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              style={{ height: "1px", borderRadius: "1px" }}
+              className="h-px rounded-full"
             />
 
-            {/* Label */}
-            <span
-              className="mono"
-              style={{
-                fontSize: "0.58rem",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: isActive ? "var(--cyan-pale)" : "var(--text-muted)",
-                transition: "color 0.2s ease",
-              }}
-            >
+            <span>
               {frame.id} / {frame.label}
             </span>
           </motion.button>
@@ -101,16 +65,7 @@ export default function HUDNav({ activeFrame, onFrameSelect }: HUDNavProps) {
       })}
 
       {/* Bottom status line */}
-      <div
-        className="mono"
-        style={{
-          fontSize: "0.5rem",
-          letterSpacing: "0.16em",
-          color: "var(--text-muted)",
-          marginTop: "10px",
-          opacity: 0.5,
-        }}
-      >
+      <div className="mono text-[8px] sm:text-[9px] tracking-widest text-slate-500 mt-1 opacity-60">
         FRAME {String(activeFrame + 1).padStart(2, "0")} / 04
       </div>
     </nav>

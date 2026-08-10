@@ -13,7 +13,7 @@ function WaIcon() {
 }
 
 const nodeVariants = {
-  hidden:  { opacity: 0, scale: 0.85 },
+  hidden: { opacity: 0, scale: 0.85 },
   visible: {
     opacity: 1, scale: 1,
     transition: { type: "spring" as const, stiffness: 200, damping: 22 },
@@ -29,20 +29,9 @@ export default function FrameContact() {
   return (
     <div
       id="frame-04"
-      style={{
-        height: "100dvh",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "4.5rem 2rem 2rem",
-        boxSizing: "border-box",
-        position: "relative",
-      }}
+      className="flex flex-col items-center justify-center h-full w-full p-4 pt-14 sm:p-8 lg:p-12 overflow-y-auto max-w-7xl mx-auto relative"
     >
-      {/* Frame label */}
-      <div className="coord-label" style={{ position: "absolute", top: "4.5rem", left: "2rem" }}>
+      <div className="coord-label absolute top-4 left-4 sm:top-8 sm:left-12">
         04 / CONTACT
       </div>
 
@@ -50,197 +39,84 @@ export default function FrameContact() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "clamp(1rem, 2.5vh, 1.75rem)",
-          maxWidth: 520,
-          width: "100%",
-        }}
+        className="flex flex-col items-center gap-4 sm:gap-6 max-w-lg w-full my-auto"
       >
+        {/* Identity line */}
+        <motion.div variants={nodeVariants} className="text-center">
+          <div className="coord-label mb-2">INITIATE COMMUNICATION PROTOCOL</div>
+          <div className="mono text-xl sm:text-3xl font-extrabold text-slate-100 tracking-tight break-words">
+            Ahmed Othman Qadir
+          </div>
+          <div className="mono text-[10px] sm:text-xs tracking-[0.2em] text-slate-400 mt-1 uppercase">
+            Communication Engineer
+          </div>
+        </motion.div>
 
-          {/* Identity line */}
-          <motion.div
-            variants={nodeVariants}
-            style={{ textAlign: "center" }}
-          >
-            <div className="coord-label" style={{ marginBottom: 8 }}>
-              INITIATE COMMUNICATION PROTOCOL
-            </div>
-            <div
-              className="mono"
-              style={{
-                fontSize: "clamp(1.4rem, 3vw, 2.2rem)",
-                fontWeight: 800,
-                color: "var(--text-primary)",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              Ahmed Othman Qadir
-            </div>
-            <div
-              className="mono"
-              style={{
-                fontSize: "0.65rem",
-                letterSpacing: "0.2em",
-                color: "var(--text-sub)",
-                marginTop: 6,
-                textTransform: "uppercase",
-              }}
-            >
-              Communication Engineer
-            </div>
-          </motion.div>
-
-          {/* Signal divider */}
-          <motion.div
-            variants={nodeVariants}
-            style={{
-              width: "100%",
-              height: 1,
-              background: "linear-gradient(90deg, transparent, rgba(168,216,240,0.25), transparent)",
-            }}
-          />
-
-          {/* Contact nodes */}
-          <motion.div
-            variants={nodeVariants}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
-              width: "100%",
-            }}
-          >
-            {/* Email */}
-            <a
-              href="mailto:ahmad.tce2223096@spu.edu.iq"
-              className="node-card"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                padding: "14px 20px",
-                textDecoration: "none",
-              }}
-              onMouseEnter={() => Sound.hover()}
-              onClick={() => Sound.click()}
-            >
-              <Mail size={14} style={{ color: "var(--cyan-mid)", flexShrink: 0 }} />
-              <div>
-                <div className="coord-label" style={{ marginBottom: 2 }}>EMAIL</div>
-                <div
-                  className="mono"
-                  style={{ fontSize: "0.75rem", color: "var(--text-primary)", fontWeight: 600 }}
-                >
-                  ahmad.tce2223096@spu.edu.iq
-                </div>
-              </div>
-            </a>
-
-            {/* Location */}
-            <div
-              className="node-card"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                padding: "14px 20px",
-                cursor: "default",
-              }}
-            >
-              <MapPin size={14} style={{ color: "var(--cyan-mid)", flexShrink: 0 }} />
-              <div>
-                <div className="coord-label" style={{ marginBottom: 2 }}>LOCATION</div>
-                <div
-                  className="mono"
-                  style={{ fontSize: "0.75rem", color: "var(--text-primary)", fontWeight: 600 }}
-                >
-                  Sulaimani · Kurdistan Region · Iraq
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── Primary CTA: WhatsApp — exact markup as specified ── */}
-          <motion.div variants={nodeVariants}>
-            <a
-              href="https://wa.me/9647700907212"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cta-node"
-              onClick={() => Sound.click()}
-              onMouseEnter={() => Sound.hover()}
-              style={{ position: "relative" }}
-            >
-              {/* Pulse border animation */}
-              <motion.span
-                aria-hidden
-                animate={{ opacity: [0.4, 0, 0.4], scale: [1, 1.08, 1] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
-                style={{
-                  position: "absolute",
-                  inset: -3,
-                  border: "1px solid rgba(168,216,240,0.2)",
-                  pointerEvents: "none",
-                }}
-              />
-              <WaIcon />
-              Initiate WhatsApp
-            </a>
-          </motion.div>
-
-          {/* Footer */}
-          <motion.div
-            variants={nodeVariants}
-            className="coord-label"
-            style={{ textAlign: "center", opacity: 0.5, fontSize: "0.55rem" }}
-          >
-            © 2026 Ahmed Othman Qadir. All rights reserved.
-          </motion.div>
-
-      </motion.div>
-
-      {/* Decorative corner marks */}
-      {[
-        { top: "5rem", left: "2rem"   },
-        { top: "5rem", right: "2rem"  },
-        { bottom: "2rem", left: "2rem"   },
-        { bottom: "2rem", right: "2rem"  },
-      ].map((pos, i) => (
+        {/* Signal divider */}
         <motion.div
-          key={i}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 + i * 0.1 }}
-          style={{
-            position: "absolute",
-            ...pos,
-            width: 6,
-            height: 6,
-            border: "1px solid rgba(168,216,240,0.18)",
-            pointerEvents: "none",
-          }}
+          variants={nodeVariants}
+          className="w-full h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent"
         />
-      ))}
 
-      {/* Rotating orbit ring */}
-      <svg
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
-        aria-hidden
-      >
-        <motion.circle
-          cx="50%" cy="50%" r="180"
-          fill="none"
-          stroke="rgba(168,216,240,0.04)"
-          strokeWidth="1"
-          strokeDasharray="8 24"
-          animate={{ rotate: [0, 360] }}
-          style={{ transformOrigin: "50% 50%" }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        />
-      </svg>
+        {/* Contact nodes */}
+        <motion.div variants={nodeVariants} className="flex flex-col gap-3 w-full">
+          {/* Email */}
+          <a
+            href="mailto:ahmad.tce2223096@spu.edu.iq"
+            className="node-card flex items-center gap-3 p-3.5 sm:p-4 text-decoration-none min-w-0"
+            onMouseEnter={() => Sound.hover()}
+            onClick={() => Sound.click()}
+          >
+            <Mail size={16} className="text-cyan-400 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <div className="coord-label mb-0.5">EMAIL</div>
+              <div className="mono text-xs sm:text-sm font-semibold text-slate-100 truncate break-all">
+                ahmad.tce2223096@spu.edu.iq
+              </div>
+            </div>
+          </a>
+
+          {/* Location */}
+          <div className="node-card flex items-center gap-3 p-3.5 sm:p-4 min-w-0 cursor-default">
+            <MapPin size={16} className="text-cyan-400 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <div className="coord-label mb-0.5">LOCATION</div>
+              <div className="mono text-xs sm:text-sm font-semibold text-slate-100 truncate">
+                Sulaimani · Kurdistan Region · Iraq
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* WhatsApp CTA */}
+        <motion.div variants={nodeVariants} className="w-full">
+          <a
+            href="https://wa.me/9647700907212"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-node relative flex items-center justify-center gap-2 py-3 px-6 text-xs sm:text-sm font-bold tracking-wider"
+            onClick={() => Sound.click()}
+            onMouseEnter={() => Sound.hover()}
+          >
+            <motion.span
+              aria-hidden
+              animate={{ opacity: [0.4, 0, 0.4], scale: [1, 1.08, 1] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+              className="absolute -inset-1 border border-cyan-400/20 rounded-xl pointer-events-none"
+            />
+            <WaIcon />
+            Initiate WhatsApp
+          </a>
+        </motion.div>
+
+        {/* Footer */}
+        <motion.div
+          variants={nodeVariants}
+          className="coord-label text-center opacity-50 text-[9px] sm:text-[10px] mt-2"
+        >
+          © 2026 Ahmed Othman Qadir. All rights reserved.
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

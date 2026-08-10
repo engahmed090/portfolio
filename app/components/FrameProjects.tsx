@@ -49,7 +49,7 @@ const PROJECTS: Project[] = [
 ];
 
 const itemVariants = {
-  hidden:  { opacity: 0, scale: 0.90, y: 16 },
+  hidden: { opacity: 0, scale: 0.9, y: 16 },
   visible: {
     opacity: 1, scale: 1, y: 0,
     transition: { type: "spring" as const, stiffness: 200, damping: 24 },
@@ -57,95 +57,48 @@ const itemVariants = {
 };
 
 const containerVariants = {
-  hidden:   {},
-  visible:  { transition: { staggerChildren: 0.10, delayChildren: 0.08 } },
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } },
 };
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({ project }: { project: Project }) {
   const Icon = project.Icon;
   return (
     <motion.div
       variants={itemVariants}
-      className="node-card"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        padding: "20px 20px",
-        height: "100%",
-        boxSizing: "border-box",
-      }}
+      className="node-card p-4 sm:p-5 flex flex-col gap-3 h-full min-w-0"
       whileHover={{ scale: 1.02, transition: { type: "spring", stiffness: 280, damping: 22 } }}
       onMouseEnter={() => Sound.hover()}
     >
-      {/* Card header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "1px solid rgba(168,216,240,0.22)",
-            background: "rgba(168,216,240,0.05)",
-            flexShrink: 0,
-          }}
-        >
-          <Icon size={14} style={{ color: "var(--cyan-mid)" }} />
+      {/* Header */}
+      <div className="flex items-center gap-2.5">
+        <div className="w-8 h-8 flex items-center justify-center border border-cyan-400/30 bg-cyan-500/10 rounded-lg shrink-0">
+          <Icon size={14} className="text-cyan-400" />
         </div>
-        <span
-          className="mono"
-          style={{ fontSize: "0.6rem", color: "var(--cyan-mid)", letterSpacing: "0.16em" }}
-        >
-          {project.id}
-        </span>
-        {/* Pulse dot */}
-        {project.link && (
-          <div
-            className="pulse-dot"
-            style={{ marginLeft: "auto", opacity: 0.5 }}
-          />
-        )}
+        <span className="mono text-xs text-cyan-400 font-bold tracking-wider">{project.id}</span>
+        {project.link && <div className="pulse-dot ml-auto opacity-75" />}
       </div>
 
-      {/* Title */}
-      <div style={{ flex: "none" }}>
-        <h3
-          className="mono"
-          style={{
-            fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)",
-            fontWeight: 700,
-            color: "var(--text-primary)",
-            lineHeight: 1.25,
-            margin: 0,
-            marginBottom: 6,
-          }}
-        >
+      {/* Title & Tag */}
+      <div>
+        <h3 className="mono text-sm sm:text-base font-bold text-slate-100 mb-1 leading-snug break-words">
           {project.title}
         </h3>
-        <div
-          className="coord-label"
-          style={{ color: "var(--text-muted)", lineHeight: 1.4 }}
-        >
-          {project.tag}
-        </div>
+        <div className="coord-label text-slate-400 leading-normal">{project.tag}</div>
       </div>
 
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
+      <div className="flex-1" />
 
-      {/* Tech tags */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-        {project.tags.map(t => (
-          <span key={t} className="tag-pill" style={{ fontSize: "0.58rem" }}>
+      {/* Tech Tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {project.tags.map((t) => (
+          <span key={t} className="tag-pill text-[10px] sm:text-xs">
             {t}
           </span>
         ))}
       </div>
 
-      {/* Divider */}
-      <div style={{ height: 1, background: "var(--border)" }} />
+      <div className="h-px bg-slate-800 my-1" />
 
       {/* CTA */}
       {project.link ? (
@@ -153,30 +106,15 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           href={project.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="cta-node"
+          className="cta-node justify-center text-xs py-2 tracking-wider"
           onClick={() => Sound.click()}
           onMouseEnter={() => Sound.hover()}
-          style={{
-            justifyContent: "center",
-            fontSize: "0.62rem",
-            padding: "10px 16px",
-            letterSpacing: "0.16em",
-          }}
         >
           View Project
-          <ExternalLink size={11} style={{ marginLeft: 7, flexShrink: 0 }} />
+          <ExternalLink size={12} className="ml-2 shrink-0" />
         </a>
       ) : (
-        <div
-          className="coord-label"
-          style={{
-            color: "var(--text-muted)",
-            textAlign: "center",
-            padding: "10px 0",
-            borderTop: "1px solid var(--border)",
-            fontStyle: "italic",
-          }}
-        >
+        <div className="coord-label text-slate-500 text-center py-2 italic border-t border-slate-800">
           Hardware Demo · No Live Link
         </div>
       )}
@@ -188,55 +126,20 @@ export default function FrameProjects() {
   return (
     <div
       id="frame-03"
-      style={{
-        height: "100dvh",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        padding: "4.5rem 2rem 2rem",
-        gap: "1.25rem",
-        boxSizing: "border-box",
-      }}
+      className="flex flex-col h-full w-full p-4 pt-14 sm:p-8 lg:p-12 overflow-y-auto max-w-7xl mx-auto gap-4 sm:gap-6"
     >
-      {/* Frame label */}
       <div className="coord-label">03 / PROJECTS</div>
 
-      {/* 2×2 card grid */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gridTemplateRows: "repeat(2, 1fr)",
-          gap: "clamp(0.75rem, 2vw, 1.25rem)",
-          minHeight: 0,
-        }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 flex-1"
       >
-        {PROJECTS.map((p, i) => (
-          <ProjectCard key={p.id} project={p} index={i} />
+        {PROJECTS.map((p) => (
+          <ProjectCard key={p.id} project={p} />
         ))}
       </motion.div>
-
-      {/* Subtle crosshair lines behind grid */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        aria-hidden="true"
-        style={{ zIndex: 0 }}
-      >
-        <motion.line
-          x1="50%" y1="5%" x2="50%" y2="95%"
-          stroke="rgba(168,216,240,0.04)" strokeWidth="1" strokeDasharray="6 18"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-        />
-        <motion.line
-          x1="5%" y1="50%" x2="95%" y2="50%"
-          stroke="rgba(168,216,240,0.04)" strokeWidth="1" strokeDasharray="6 18"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
-        />
-      </svg>
     </div>
   );
 }

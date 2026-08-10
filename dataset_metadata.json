@@ -1,0 +1,26 @@
+{
+  "dataset_name": "Ahmed Scientific Engineering Knowledge Dataset",
+  "version": "1.0",
+  "record_count": 55,
+  "purpose": "Foundation dataset for scientific NLP/DNN experiments and engineering knowledge organization.",
+  "important_note": "This is a curated knowledge dataset reconstructed from information available in the conversation context. It does not contain the user's original raw 9,018 or 37,525 simulation rows; those source files are required to train a numerical regression DNN on metamaterial data.",
+  "recommended_DNN_targets": [
+    "Metamaterial absorptance prediction",
+    "Resonance-frequency prediction",
+    "Inverse design parameter prediction",
+    "Multi-output regression of electromagnetic response"
+  ],
+  "recommended_numeric_features": [
+    "p",
+    "m",
+    "a",
+    "hs",
+    "frequency"
+  ],
+  "recommended_targets": [
+    "Absorptance",
+    "Absorption",
+    "resonance_frequency"
+  ],
+  "data_quality": "Mixed: user-provided project facts + standard engineering definitions. Verify units and exact dataset schemas before scientific publication."
+}
