@@ -11,7 +11,7 @@ function createCtx(): AudioContext | null {
 }
 
 let _ctx: AudioContext | null = null;
-let _muted = true;
+let _muted = false;      // ← start UN-muted so sounds play on first interaction
 let _unlocked = false;
 
 function getCtx(): AudioContext | null {
@@ -48,40 +48,59 @@ export const Sound = {
   expand:    () => { playTone(1100, "sine",     0.04, 80,  550); },
 };
 
-// ─── Unlock on first user gesture ─────────────────────────────
+// ─── Internal unlock helper ────────────────────────────────────
+function doUnlock() {
+  if (_unlocked) return;
+  const ctx = getCtx();
+  if (ctx) {
+    ctx.resume().then(() => { _unlocked = true; }).catch(() => {});
+  } else {
+    _unlocked = true;
+  }
+}
+
+// ─── Unlock on VERY FIRST user gesture — auto, no button needed ─
 export function useSoundUnlock() {
   useEffect(() => {
-    function unlock() {
-      if (_unlocked) return;
-      const ctx = getCtx();
-      if (ctx) {
-        ctx.resume().then(() => { _unlocked = true; }).catch(() => {});
-      }
-    }
-    window.addEventListener("pointerdown", unlock, { once: true });
-    window.addEventListener("keydown", unlock, { once: true });
+    const unlock = () => doUnlock();
+
+    window.addEventListener("pointerdown", unlock, { once: true, passive: true });
+    window.addEventListener("keydown",     unlock, { once: true });
+    window.addEventListener("wheel",       unlock, { once: true, passive: true });
+    window.addEventListener("touchstart",  unlock, { once: true, passive: true });
+    window.addEventListener("scroll",      unlock, { once: true, passive: true });
+
     return () => {
       window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("keydown",     unlock);
+      window.removeEventListener("wheel",       unlock);
+      window.removeEventListener("touchstart",  unlock);
+      window.removeEventListener("scroll",      unlock);
     };
   }, []);
 }
 
 // ─── Mute Toggle UI ───────────────────────────────────────────
 export function SoundToggle() {
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false); // starts un-muted
+
+  // Keep local state in sync with module-level _muted
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const toggle = useCallback(() => {
     _muted = !_muted;
     setMuted(_muted);
     if (!_muted) {
-      _unlocked = true;
-      Sound.click();
+      // Un-muting also unlocks
+      doUnlock();
+      // Give a small feedback tone
+      setTimeout(() => Sound.click(), 50);
     }
   }, []);
 
   return (
     <button
+      ref={btnRef}
       id="sound-toggle"
       onClick={toggle}
       aria-label={muted ? "Enable sound effects" : "Disable sound effects"}

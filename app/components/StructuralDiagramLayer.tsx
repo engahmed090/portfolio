@@ -215,17 +215,109 @@ export default function StructuralDiagramLayer() {
         <text x="16" y="892" fontSize="8" fill="#4A5568" fontFamily="Space Grotesk, monospace" letterSpacing="2">
           X:0.00  Y:1.00
         </text>
+
+        {/* ── TELECOM ACCENT: Satellite Dish — bottom left ── */}
+        <g transform="translate(80, 720)" opacity="0.22">
+          {/* Dish parabola */}
+          <path
+            d="M -40 0 Q 0 -55 40 0"
+            stroke="#7FB9DC"
+            strokeWidth="1.2"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {/* Dish arm */}
+          <line x1="0" y1="0" x2="0" y2="-30" stroke="#7FB9DC" strokeWidth="1" />
+          <circle cx="0" cy="-32" r="2.5" fill="#7FB9DC" />
+          {/* Mount pole */}
+          <line x1="0" y1="0" x2="0" y2="24" stroke="#7FB9DC" strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="-12" y1="24" x2="12" y2="24" stroke="#7FB9DC" strokeWidth="1" />
+          {/* Signal arcs emanating */}
+          {[14, 22, 30].map((r, i) => (
+            <motion.path
+              key={i}
+              d={`M ${-r} ${-r * 0.4} A ${r} ${r} 0 0 1 ${r} ${-r * 0.4}`}
+              stroke="#A8D8F0"
+              strokeWidth="0.7"
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray="3 5"
+              animate={{ strokeDashoffset: [0, -24] }}
+              transition={{ duration: 3 + i, repeat: Infinity, ease: "linear" }}
+            />
+          ))}
+        </g>
+
+        {/* ── TELECOM ACCENT: RF Concentric Arcs — upper right ── */}
+        <g transform="translate(1360, 200)" opacity="0.18">
+          {[20, 34, 48, 62].map((r, i) => (
+            <motion.path
+              key={i}
+              d={`M ${-r} 0 A ${r} ${r} 0 0 1 0 ${-r}`}
+              stroke="#A8D8F0"
+              strokeWidth="0.8"
+              fill="none"
+              strokeLinecap="round"
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+            />
+          ))}
+          <circle cx={0} cy={0} r={3} fill="#7FB9DC" fillOpacity="0.5" />
+        </g>
+
+        {/* ── TELECOM ACCENT: Circuit node cluster — mid right ── */}
+        <g transform="translate(1390, 520)" opacity="0.15">
+          {[
+            { x: 0, y: 0 }, { x: 28, y: -18 }, { x: 28, y: 18 },
+            { x: -28, y: -18 }, { x: -28, y: 18 }, { x: 0, y: -36 },
+          ].map((n, i) => (
+            <motion.circle
+              key={i}
+              cx={n.x} cy={n.y} r={i === 0 ? 5 : 3}
+              fill="none"
+              stroke="#94A3B8"
+              strokeWidth="0.8"
+              animate={{ r: i === 0 ? [5, 6, 5] : [3, 3.8, 3], opacity: [0.3, 0.7, 0.3] }}
+              transition={{ duration: 2.8 + i * 0.3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          ))}
+          {/* Connecting traces */}
+          {[
+            [0,0, 28,-18], [0,0, 28,18], [0,0, -28,-18],
+            [0,0, -28,18], [0,0, 0,-36],
+          ].map(([x1,y1,x2,y2], i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke="#94A3B8" strokeWidth="0.5" strokeOpacity="0.4"
+              strokeDasharray="3 4"
+            />
+          ))}
+        </g>
+
+        {/* ── TELECOM ACCENT: Miniature telecom tower — bottom right ── */}
+        <g transform="translate(1300, 600)" opacity="0.14">
+          <line x1="0" y1="0" x2="0" y2="100" stroke="#7FB9DC" strokeWidth="1.2" />
+          <line x1="-16" y1="20" x2="16" y2="20" stroke="#7FB9DC" strokeWidth="1" />
+          <line x1="-26" y1="46" x2="26" y2="46" stroke="#7FB9DC" strokeWidth="1" />
+          <line x1="-36" y1="76" x2="36" y2="76" stroke="#7FB9DC" strokeWidth="1" />
+          <line x1="-16" y1="20" x2="-26" y2="46" stroke="#7FB9DC" strokeWidth="0.6" />
+          <line x1="16"  y1="20" x2="26"  y2="46" stroke="#7FB9DC" strokeWidth="0.6" />
+          <line x1="-26" y1="46" x2="-36" y2="76" stroke="#7FB9DC" strokeWidth="0.6" />
+          <line x1="26"  y1="46" x2="36"  y2="76" stroke="#7FB9DC" strokeWidth="0.6" />
+          <circle cx="0" cy="0" r="2.5" fill="#7FB9DC" fillOpacity="0.5" />
+        </g>
+
       </svg>
 
       {/* Very subtle radial vignette */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
+          position:   "absolute",
+          inset:      0,
           background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, #0A0D12 100%)",
-          opacity: 0.6,
+          opacity:    0.6,
         }}
       />
     </div>
   );
 }
+

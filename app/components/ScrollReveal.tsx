@@ -13,53 +13,40 @@ interface ScrollRevealProps {
   distance?: number;
   className?: string;
   once?: boolean;
-  /** Extra margin before the trigger fires — use negative value to trigger earlier */
+  /** Extra margin before the trigger fires — negative = trigger earlier */
   margin?: string;
 }
 
 const buildVariants = (direction: Direction, distance: number): Variants => {
   const offset = {
-    up:    { y: distance,   x: 0 },
-    down:  { y: -distance,  x: 0 },
-    left:  { x: distance,   y: 0 },
-    right: { x: -distance,  y: 0 },
-    fade:  { x: 0,          y: 0 },
+    up:    { y: distance,  x: 0 },
+    down:  { y: -distance, x: 0 },
+    left:  { x: distance,  y: 0 },
+    right: { x: -distance, y: 0 },
+    fade:  { x: 0,         y: 0 },
   }[direction];
 
   return {
-    hidden: {
-      opacity: 0,
-      ...offset,
-      scale: direction === "fade" ? 0.96 : 1,
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      scale: 1,
-    },
+    hidden:  { opacity: 0, ...offset },
+    visible: { opacity: 1, x: 0, y: 0 },
   };
 };
 
 /**
- * ScrollReveal — buttery-smooth fade-in & slide animation.
- *
- * @example
- * <ScrollReveal direction="up" delay={0.2}>
- *   <YourComponent />
- * </ScrollReveal>
+ * ScrollReveal — smooth tween-based fade-in & slide animation.
+ * Uses type:"tween" + easeOut to prevent spring jitter/bounce.
  */
 export default function ScrollReveal({
   children,
-  delay    = 0,
-  duration = 0.55,
+  delay     = 0,
+  duration  = 0.5,
   direction = "up",
-  distance  = 28,
+  distance  = 24,
   className,
   once      = true,
-  margin    = "-60px",
+  margin    = "-40px",
 }: ScrollRevealProps) {
-  const reduced = useReducedMotion();
+  const reduced  = useReducedMotion();
   const variants = buildVariants(direction, distance);
 
   if (reduced) {
@@ -74,9 +61,10 @@ export default function ScrollReveal({
       whileInView="visible"
       viewport={{ once, margin }}
       transition={{
+        type:     "tween",    // ← no spring, no bounce, no jitter
+        ease:     "easeOut",
         duration,
         delay,
-        ease: [0.22, 1, 0.36, 1], // custom ease-out-expo
       }}
     >
       {children}

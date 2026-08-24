@@ -94,7 +94,7 @@ export function DownloadCVButton() {
   return (
     <motion.a
       id="download-cv-button"
-      href="/Ahmed_Othman_Qadir_CV.pdf"
+      href="/Ahmed_Othman_Qadir_CV_Communication_Engineering_2.pdf"
       download
       target="_blank"
       rel="noopener noreferrer"
