@@ -11,59 +11,103 @@ interface AskMeButtonProps {
 
 export default function AskMeButton({ onClick, isOpen }: AskMeButtonProps) {
   return (
-    <motion.button
-      id="ask-me-trigger-button"
-      onClick={() => {
-        Sound.click();
-        onClick();
-      }}
-      onMouseEnter={() => Sound.hover()}
-      aria-label="Ask Me AI Assistant"
-      aria-expanded={isOpen}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      animate={{
-        scale: [1, 1.03, 1],
-        boxShadow: [
-          "0 0 14px rgba(34,211,238,0.18), inset 0 0 10px rgba(34,211,238,0.05)",
-          "0 0 24px rgba(34,211,238,0.45), inset 0 0 16px rgba(34,211,238,0.15)",
-          "0 0 14px rgba(34,211,238,0.18), inset 0 0 10px rgba(34,211,238,0.05)",
-        ],
-        borderColor: [
-          "rgba(34,211,238,0.25)",
-          "rgba(34,211,238,0.55)",
-          "rgba(34,211,238,0.25)",
-        ],
-      }}
-      transition={{
-        duration: 2.6,
-        repeat: Infinity,
-        repeatType: "reverse",
-        ease: "easeInOut",
-      }}
-      className="fixed top-3 left-3 sm:top-6 sm:left-7 z-[900] flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-slate-950/80 backdrop-blur-md border border-cyan-400/30 text-slate-100 cursor-pointer select-none"
+    <div
+      className="fixed bottom-6 right-20 z-[900]"
+      style={{ pointerEvents: "auto" }}
     >
-      {/* Animated RadioTower Icon */}
-      <motion.div
-        animate={{ opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        className="flex items-center justify-center text-cyan-400"
-      >
-        <RadioTower className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-cyan-400" />
-      </motion.div>
+      {/* ── Triple-ring pulse halos ───────────────────────── */}
+      {[0, 0.6, 1.2].map((delay, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            border: "1.5px solid rgba(34,211,238,0.55)",
+          }}
+          animate={{
+            scale:   [1, 1.65 + i * 0.25],
+            opacity: [0.55, 0],
+          }}
+          transition={{
+            duration: 2.2,
+            delay,
+            repeat: Infinity,
+            ease: "easeOut",
+          }}
+        />
+      ))}
 
-      {/* Button text - EXACTLY "Ask Me" */}
-      <span
-        className="mono text-xs sm:text-xs font-bold tracking-wider text-cyan-200"
+      {/* ── Main button ───────────────────────────────────── */}
+      <motion.button
+        id="ask-me-trigger-button"
+        onClick={() => {
+          Sound.click();
+          onClick();
+        }}
+        onMouseEnter={() => Sound.hover()}
+        aria-label="Ask Me AI Assistant"
+        aria-expanded={isOpen}
+        whileHover={{ scale: 1.07, y: -2 }}
+        whileTap={{ scale: 0.93 }}
+        animate={{
+          boxShadow: [
+            "0 0 16px rgba(34,211,238,0.22), 0 0 32px rgba(34,211,238,0.08), inset 0 0 12px rgba(34,211,238,0.06)",
+            "0 0 32px rgba(34,211,238,0.55), 0 0 72px rgba(34,211,238,0.20), inset 0 0 22px rgba(34,211,238,0.14)",
+            "0 0 16px rgba(34,211,238,0.22), 0 0 32px rgba(34,211,238,0.08), inset 0 0 12px rgba(34,211,238,0.06)",
+          ],
+          borderColor: [
+            "rgba(34,211,238,0.30)",
+            "rgba(34,211,238,0.70)",
+            "rgba(34,211,238,0.30)",
+          ],
+        }}
+        transition={{
+          duration: 2.4,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut",
+        }}
+        className="relative flex items-center gap-2.5 px-5 py-2.5 rounded-full select-none cursor-pointer"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(34,211,238,0.14) 0%, rgba(6,182,212,0.06) 50%, rgba(10,13,18,0.90) 100%)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          border: "1.5px solid rgba(34,211,238,0.35)",
+        }}
       >
-        Ask Me
-      </span>
+        {/* Animated RadioTower Icon */}
+        <motion.div
+          animate={{ opacity: [0.65, 1, 0.65], scale: [0.9, 1.05, 0.9] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          className="flex items-center justify-center"
+        >
+          <RadioTower className="h-4 w-4 text-cyan-300" />
+        </motion.div>
 
-      {/* Online indicator dot */}
-      <span className="relative flex h-2 w-2 ml-0.5">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
-      </span>
-    </motion.button>
+        {/* Label */}
+        <span
+          className="font-bold tracking-widest uppercase"
+          style={{
+            fontFamily: "'Space Grotesk', monospace",
+            fontSize: "0.72rem",
+            background:
+              "linear-gradient(135deg, #67e8f9 0%, #a5f3fc 60%, #e0f2fe 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            filter: "drop-shadow(0 0 5px rgba(34,211,238,0.5))",
+          }}
+        >
+          Ask Me Anything
+        </span>
+
+        {/* Online indicator */}
+        <span className="relative flex h-2 w-2 ml-0.5">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+        </span>
+      </motion.button>
+    </div>
   );
 }

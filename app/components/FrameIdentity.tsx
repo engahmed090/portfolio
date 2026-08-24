@@ -1,28 +1,29 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Radio, Cpu, Satellite, CircuitBoard, Waves, Activity } from "lucide-react";
 import { Sound } from "./SoundSystem";
+import Avatar from "./Avatar";
+import { MetricBadge, DownloadCVButton } from "./MetricBadge";
 
 const STACK_TAGS = [
-  { Icon: Radio, label: "RF Systems" },
-  { Icon: Cpu, label: "CST Studio" },
-  { Icon: Activity, label: "AI Dev" },
+  { Icon: Radio,        label: "RF Systems" },
+  { Icon: Cpu,          label: "CST Studio" },
+  { Icon: Activity,     label: "AI Dev" },
   { Icon: CircuitBoard, label: "Arduino / Pi" },
-  { Icon: Satellite, label: "Telecom" },
-  { Icon: Waves, label: "Signal Proc" },
+  { Icon: Satellite,    label: "Telecom" },
+  { Icon: Waves,        label: "Signal Proc" },
 ];
 
 const RANK_BADGES = [
-  { value: "2nd", label: "Overall · SPU · 4 Yrs" },
-  { value: "1st", label: "Year 3 · SPU" },
+  { value: "2nd", label: "Overall · SPU · 4 Yrs", highlight: true },
+  { value: "1st", label: "Year 3 · SPU",           highlight: true },
 ];
 
 function TelecomTower() {
   const reduced = useReducedMotion();
   const draw = {
-    hidden: { pathLength: 0, opacity: 0 },
+    hidden:  { pathLength: 0, opacity: 0 },
     visible: {
       pathLength: 1,
       opacity: 1,
@@ -42,15 +43,15 @@ function TelecomTower() {
       animate="visible"
       aria-hidden
     >
-      <motion.line variants={draw} x1="40" y1="4" x2="40" y2="156" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.3 } } } }} x1="24" y1="20" x2="56" y2="20" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.5 } } } }} x1="18" y1="50" x2="62" y2="50" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.7 } } } }} x1="10" y1="88" x2="70" y2="88" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.9 } } } }} x1="4" y1="130" x2="76" y2="130" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.0 } } } }} x1="24" y1="20" x2="18" y2="50" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.0 } } } }} x1="56" y1="20" x2="62" y2="50" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.2 } } } }} x1="18" y1="50" x2="10" y2="88" />
-      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.2 } } } }} x1="62" y1="50" x2="70" y2="88" />
+      <motion.line variants={draw} x1="40" y1="4"  x2="40"  y2="156" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.3 } } } }} x1="24" y1="20"  x2="56" y2="20" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.5 } } } }} x1="18" y1="50"  x2="62" y2="50" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.7 } } } }} x1="10" y1="88"  x2="70" y2="88" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 2.2, ease: "easeInOut", delay: 0.9 } } } }} x1="4"  y1="130" x2="76" y2="130" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.0 } } } }} x1="24" y1="20"  x2="18" y2="50" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.0 } } } }} x1="56" y1="20"  x2="62" y2="50" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.2 } } } }} x1="18" y1="50"  x2="10" y2="88" />
+      <motion.line variants={{ ...draw, visible: { ...draw.visible, transition: { ...draw.visible.transition, pathLength: { duration: 1.8, ease: "easeInOut", delay: 1.2 } } } }} x1="62" y1="50"  x2="70" y2="88" />
       <motion.circle
         cx={40} cy={8} r={3}
         fill="none"
@@ -66,18 +67,18 @@ function TelecomTower() {
 
 function YagiAntenna() {
   const draw = {
-    hidden: { pathLength: 0, opacity: 0 },
+    hidden:  { pathLength: 0, opacity: 0 },
     visible: (delay: number) => ({
       pathLength: 1,
       opacity: 1,
       transition: {
         pathLength: { duration: 2.0 + delay * 0.15, ease: "easeInOut", delay },
-        opacity: { duration: 0.3, delay },
+        opacity:    { duration: 0.3, delay },
       },
     }),
   };
   const elements = [
-    { x: 8, len: 56, delay: 0.2 },
+    { x: 8,  len: 56, delay: 0.2 },
     { x: 20, len: 46, delay: 0.5 },
     { x: 34, len: 38, delay: 0.8 },
     { x: 48, len: 30, delay: 1.1 },
@@ -160,16 +161,13 @@ function NeuralNet() {
 }
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
+  hidden:   { opacity: 0 },
+  visible:  { opacity: 1, transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, scale: 0.88, y: 12 },
-  visible: {
-    opacity: 1, scale: 1, y: 0,
-    transition: { type: "spring" as const, stiffness: 200, damping: 22 },
-  },
+  hidden:   { opacity: 0, scale: 0.88, y: 12 },
+  visible:  { opacity: 1, scale: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 22 } },
 };
 
 export default function FrameIdentity() {
@@ -188,27 +186,9 @@ export default function FrameIdentity() {
         animate="visible"
         className="flex flex-col lg:grid lg:grid-cols-[auto_1fr_auto] gap-6 lg:gap-12 items-center my-auto w-full"
       >
-        {/* Col 1: Profile image */}
+        {/* Col 1: HUD Avatar */}
         <motion.div variants={itemVariants} className="flex flex-col items-center gap-2.5 shrink-0">
-          <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36 shrink-0">
-            <div className="w-full h-full rounded-full overflow-hidden border border-cyan-400/30 shadow-[0_0_28px_rgba(127,185,220,0.15)] relative">
-              <Image
-                src="/profile.jpg"
-                alt="Ahmed Othman Qadir"
-                fill
-                className="object-cover object-top"
-                priority
-                sizes="(max-width: 640px) 96px, 144px"
-              />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-transparent via-transparent to-slate-950/50" />
-            </div>
-            <motion.div
-              animate={{ scale: [1, 1.14, 1], opacity: [0.25, 0, 0.25] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: "easeOut" }}
-              className="absolute -inset-2 rounded-full border border-cyan-400/20 pointer-events-none"
-            />
-          </div>
-          <div className="coord-label text-center">NODE / ID-000</div>
+          <Avatar size={128} />
         </motion.div>
 
         {/* Col 2: Identity text block */}
@@ -240,17 +220,21 @@ export default function FrameIdentity() {
             Sulaimani · Kurdistan Region · Iraq
           </motion.div>
 
-          {/* Rank badges */}
+          {/* Glowing Rank badges */}
           <motion.div
             variants={containerVariants}
             className="flex flex-wrap justify-center lg:justify-start gap-2.5 mt-1"
           >
             {RANK_BADGES.map((b) => (
-              <motion.div key={b.value} variants={itemVariants} className="stat-badge">
-                <span className="stat-value">{b.value}</span>
-                <span className="stat-label">{b.label}</span>
+              <motion.div key={b.value} variants={itemVariants}>
+                <MetricBadge value={b.value} label={b.label} highlight={b.highlight} />
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* Download CV CTA */}
+          <motion.div variants={itemVariants} className="flex justify-center lg:justify-start mt-2">
+            <DownloadCVButton />
           </motion.div>
         </motion.div>
 
@@ -277,7 +261,7 @@ export default function FrameIdentity() {
         </motion.div>
       </motion.div>
 
-      {/* SVG Illustrations - Hidden on mobile to prevent overflow */}
+      {/* SVG Illustrations */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
