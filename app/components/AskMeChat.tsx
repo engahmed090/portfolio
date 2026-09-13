@@ -1,10 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import AskMeButton from "./AskMeButton";
 import ChatPanel from "./ChatPanel";
 import { useChat } from "../hooks/useChat";
 
 export default function AskMeChat() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const {
     isOpen,
     toggleChat,
@@ -15,6 +22,8 @@ export default function AskMeChat() {
     resetChat,
     suggestedPrompts,
   } = useChat();
+
+  if (!mounted) return null;
 
   return (
     <>

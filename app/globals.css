@@ -130,6 +130,45 @@ body::before {
   box-shadow: 0 0 10px rgba(34,211,238,.14);
 }
 
+.telecom-command {
+  position: relative;
+  padding: 12px;
+  border: 1px solid rgba(103,232,249,.22);
+  background: linear-gradient(155deg, rgba(12,24,39,.94), rgba(5,10,18,.82));
+  box-shadow: 0 30px 90px rgba(0,0,0,.45), 0 0 55px rgba(34,211,238,.07), inset 0 0 0 1px rgba(255,255,255,.018);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.telecom-command::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgba(103,232,249,.055) 48%, transparent 66%);
+  transform: translateX(-100%);
+  animation: command-scan 5.5s ease-in-out infinite;
+}
+.telecom-command__title, .telecom-kpis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-space), monospace;
+  font-size: 8px;
+  letter-spacing: .16em;
+  color: #7f91a8;
+}
+.telecom-live { color: #6ee7b7; }
+.telecom-live i { display:inline-block; width:5px; height:5px; margin-right:5px; border-radius:50%; background:#6ee7b7; box-shadow:0 0 9px #6ee7b7; }
+.telecom-stage { position: relative; margin: 9px 0; height: 126px; overflow: hidden; border-block: 1px solid rgba(148,163,184,.08); }
+.telecom-stage svg { width: 100%; height: 100%; }
+.telecom-grid-line { fill:none; stroke:#94a3b8; stroke-width:.35; opacity:.1; }
+.telecom-stage__label { position:absolute; font: 600 6px var(--font-space), monospace; letter-spacing:.12em; color:#7890a8; }
+.label-a { left: 4px; bottom: 5px; }.label-b { left: 66%; top: 54%; }.label-c { right: 4px; top: 5px; }
+.telecom-kpis { gap: 6px; margin-bottom: 9px; }
+.telecom-kpis span { flex:1; display:flex; align-items:center; gap:4px; padding:7px; border:1px solid rgba(148,163,184,.1); background:rgba(255,255,255,.018); }
+.telecom-kpis b { color:#b6edfa; font-size:10px; }
+
+@keyframes command-scan { 0%,24% { transform:translateX(-100%); } 70%,100% { transform:translateX(100%); } }
+
 @keyframes status-pulse { 50% { opacity: .35; transform: scale(.75); } }
 
 @media (min-width: 1024px) {
@@ -308,6 +347,27 @@ body::before {
   width: 100%;
   height: 100dvh;
   overflow: hidden;
+}
+
+.frame-grid::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 2px;
+  z-index: 20;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(103,232,249,.7), transparent);
+  box-shadow: 0 0 18px rgba(34,211,238,.35);
+  animation: vertical-scan 7s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+@keyframes vertical-scan {
+  0%, 12% { transform: translateY(0); opacity: 0; }
+  18% { opacity: .55; }
+  80% { opacity: .12; }
+  92%, 100% { transform: translateY(100vh); opacity: 0; }
 }
 
 /* Pulse dot */
