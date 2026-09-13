@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ExternalLink, Layers, Shield, Leaf, Cpu, Brain, Antenna } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+import { ExternalLink, Layers, Shield, Leaf, Cpu } from "lucide-react";
 
 const PROJECTS = [
   {
@@ -53,7 +53,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden:  { opacity: 0, scale: 0.88, y: 28 },
   visible: {
     opacity: 1, scale: 1, y: 0,

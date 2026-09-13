@@ -10,6 +10,8 @@ import {
   motion,
   AnimatePresence,
   useReducedMotion,
+  type Variants,
+  type Transition,
 } from "framer-motion";
 import FrameIdentity  from "./FrameIdentity";
 import FrameMetrics   from "./FrameMetrics";
@@ -23,14 +25,14 @@ const FRAMES = [FrameIdentity, FrameMetrics, FrameProjects, FrameContact];
 const FRAME_COUNT = FRAMES.length;
 
 // ── Smooth tween — no spring bounce ──
-const FRAME_TRANSITION = {
+const FRAME_TRANSITION: Transition = {
   type:     "tween" as const,
   ease:     "easeInOut",
   duration: 0.45,
 };
 
 // ── Per-frame transition variants ──
-const frameVariants = {
+const frameVariants: Variants = {
   entering: (dir: number) => ({
     opacity: 0,
     y:       dir > 0 ? 30 : -30,

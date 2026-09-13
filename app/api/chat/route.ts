@@ -126,8 +126,7 @@ function retrieveContext(userQuery: string, knowledgeBase: KnowledgeItem[], topN
   return relevantMatches.slice(0, topN);
 }
 
-const apiKey = "sk-or-v1-" + "c1dd5491143980677faac5f4c7f19fcc28af09e4d404de53ae0f11af976edd65";
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || apiKey;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 export async function POST(req: Request) {
   try {
@@ -225,8 +224,9 @@ ${contextFormatted ? `BACKGROUND CONTEXT FOR REFERENCE:\n${contextFormatted}` : 
       content: aiMessage,
       contextItemsCount: retrievedItems.length,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Chat API route error:", error);
-    return NextResponse.json({ error: error?.message || "Failed to process chat request." }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed to process chat request.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

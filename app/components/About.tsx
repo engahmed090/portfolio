@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { User, Zap, Globe, FlaskConical } from "lucide-react";
 
 const HIGHLIGHTS = [
@@ -33,7 +33,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden:  { opacity: 0, scale: 0.9, y: 20 },
   visible: {
     opacity: 1, scale: 1, y: 0,
@@ -169,7 +169,7 @@ export default function About() {
                 category: "Hardware",
                 skills: ["Arduino", "Raspberry Pi", "Circuit Design & Implementation"],
               },
-            ].map((group, gi) => (
+            ].map((group) => (
               <motion.div
                 key={group.category}
                 variants={itemVariants}

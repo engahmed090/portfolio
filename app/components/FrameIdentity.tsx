@@ -5,6 +5,7 @@ import { Radio, Cpu, Satellite, CircuitBoard, Waves, Activity } from "lucide-rea
 import { Sound } from "./SoundSystem";
 import Avatar from "./Avatar";
 import { MetricBadge, DownloadCVButton } from "./MetricBadge";
+import LiveSpectrum from "./LiveSpectrum";
 
 const STACK_TAGS = [
   { Icon: Radio,        label: "RF Systems" },
@@ -29,7 +30,7 @@ function TelecomTower() {
       opacity: 1,
       transition: { pathLength: { duration: 2.6, ease: "easeInOut" }, opacity: { duration: 0.4 } },
     },
-  };
+  } as const;
   return (
     <motion.svg
       viewBox="0 0 80 160"
@@ -72,11 +73,11 @@ function YagiAntenna() {
       pathLength: 1,
       opacity: 1,
       transition: {
-        pathLength: { duration: 2.0 + delay * 0.15, ease: "easeInOut", delay },
+        pathLength: { duration: 2.0 + delay * 0.15, ease: "easeInOut" as const, delay },
         opacity:    { duration: 0.3, delay },
       },
     }),
-  };
+  } as const;
   const elements = [
     { x: 8,  len: 56, delay: 0.2 },
     { x: 20, len: 46, delay: 0.5 },
@@ -210,8 +211,13 @@ export default function FrameIdentity() {
             variants={itemVariants}
             className="mono text-[11px] sm:text-xs tracking-[0.2em] text-slate-400 uppercase"
           >
-            Communication Engineer
+            Communication Engineer · RF / AI Systems
           </motion.div>
+
+          <motion.p variants={itemVariants} className="identity-manifesto">
+            I engineer the invisible infrastructure—turning radio waves, intelligent sensing,
+            and embedded hardware into systems that can be measured, trusted, and deployed.
+          </motion.p>
 
           <motion.div
             variants={itemVariants}
@@ -259,6 +265,10 @@ export default function FrameIdentity() {
             );
           })}
         </motion.div>
+      </motion.div>
+
+      <motion.div variants={itemVariants} initial="hidden" animate="visible" className="hidden lg:block absolute right-12 bottom-14 w-[310px]">
+        <LiveSpectrum />
       </motion.div>
 
       {/* SVG Illustrations */}

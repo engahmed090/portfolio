@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Radio, Satellite, Cpu, Wifi, CircuitBoard, Waves } from "lucide-react";
 

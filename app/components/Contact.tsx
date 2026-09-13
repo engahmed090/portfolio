@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 
 function WaIcon() {
@@ -18,7 +18,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden:  { opacity: 0, scale: 0.9, y: 20 },
   visible: {
     opacity: 1, scale: 1, y: 0,
