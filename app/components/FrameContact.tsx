@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Mail, MapPin } from "lucide-react";
 import { Sound } from "./SoundSystem";
+import ContactNetwork from "./ContactNetwork";
 
 function WaIcon() {
   return (
@@ -39,8 +40,9 @@ export default function FrameContact() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col items-center gap-4 sm:gap-6 max-w-lg w-full my-auto"
+        className="grid lg:grid-cols-[minmax(360px,520px)_minmax(420px,1fr)] items-center gap-8 lg:gap-16 w-full my-auto"
       >
+        <div className="flex flex-col items-center gap-4 sm:gap-6 w-full">
         {/* Identity line */}
         <motion.div variants={nodeVariants} className="text-center">
           <div className="coord-label mb-2">INITIATE COMMUNICATION PROTOCOL</div>
@@ -115,6 +117,11 @@ export default function FrameContact() {
           className="coord-label text-center opacity-50 text-[9px] sm:text-[10px] mt-2"
         >
           © 2026 Ahmed Othman Qadir. All rights reserved.
+        </motion.div>
+        </div>
+
+        <motion.div variants={nodeVariants} className="hidden lg:block w-full">
+          <ContactNetwork />
         </motion.div>
       </motion.div>
     </div>

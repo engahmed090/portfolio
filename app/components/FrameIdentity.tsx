@@ -214,10 +214,7 @@ export default function FrameIdentity() {
             Communication Engineer · RF / AI Systems
           </motion.div>
 
-          <motion.p variants={itemVariants} className="identity-manifesto">
-            I engineer the invisible infrastructure—turning radio waves, intelligent sensing,
-            and embedded hardware into systems that can be measured, trusted, and deployed.
-          </motion.p>
+          <motion.p variants={itemVariants} className="identity-manifesto">SIGNAL ARCHITECT</motion.p>
 
           <motion.div
             variants={itemVariants}

@@ -3,7 +3,6 @@
 import AskMeChat from "./components/AskMeChat";
 import StructuralDiagramLayer from "./components/StructuralDiagramLayer";
 import EngineeringCanvas from "./components/EngineeringCanvas";
-import { SoundToggle } from "./components/SoundSystem";
 import SignalWaveBackground from "./components/SignalWaveBackground";
 
 export default function Home() {
@@ -73,9 +72,6 @@ export default function Home() {
         <span>AOQ / SIGNAL INTELLIGENCE</span>
         <span className="system-rail__status"><i /> AVAILABLE FOR ENGINEERING COLLABORATION</span>
       </div>
-
-      {/* Sound toggle — fixed bottom-right */}
-      <SoundToggle />
 
       {/* AI Chatbot */}
       <AskMeChat />
