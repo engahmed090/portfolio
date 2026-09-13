@@ -89,11 +89,14 @@ body::before {
 }
 
 .identity-manifesto {
-  max-width: 620px;
-  margin: 4px auto 0;
-  color: #a9b7c9;
-  font-size: clamp(.76rem, 1.1vw, .92rem);
-  line-height: 1.7;
+  margin: 6px auto 0;
+  color: #d8f7ff;
+  font-family: var(--font-space), monospace;
+  font-size: clamp(.8rem, 1.1vw, 1rem);
+  font-weight: 800;
+  letter-spacing: .32em;
+  line-height: 1;
+  text-shadow: 0 0 24px rgba(34,211,238,.45);
 }
 
 .spectrum-module {
@@ -173,6 +176,53 @@ body::before {
 
 @media (min-width: 1024px) {
   .identity-manifesto { margin-left: 0; }
+}
+
+.project-telemetry {
+  position: relative;
+  min-height: 112px;
+  overflow: hidden;
+  border: 1px solid rgba(103,232,249,.1);
+  background: radial-gradient(circle at 50% 50%, rgba(34,211,238,.08), transparent 56%), rgba(3,10,20,.48);
+}
+.project-telemetry::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(105deg, transparent 25%, rgba(165,243,252,.07) 48%, transparent 67%);
+  animation: telemetry-scan 4.8s ease-in-out infinite;
+}
+.project-telemetry__meta {
+  position:absolute; inset:7px 9px auto; z-index:2; display:flex; justify-content:space-between;
+  font:600 6px var(--font-space),monospace; letter-spacing:.16em; color:#557087;
+}
+.project-telemetry svg { width:100%; height:112px; }
+.project-telemetry text { fill:#668097; font:600 6px var(--font-space),monospace; letter-spacing:.12em; }
+.telemetry-grid { fill:none; stroke:#94a3b8; stroke-width:.4; opacity:.08; }
+@keyframes telemetry-scan { 0%,20%{transform:translateX(-100%)} 75%,100%{transform:translateX(100%)} }
+
+.contact-network {
+  position:relative; padding:14px; border:1px solid rgba(103,232,249,.16);
+  background:radial-gradient(circle at 55% 45%,rgba(34,211,238,.08),transparent 48%),rgba(5,13,24,.65);
+  box-shadow:0 28px 90px rgba(0,0,0,.4),inset 0 0 45px rgba(34,211,238,.025);
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+}
+.contact-network__head,.contact-network__stats { display:flex;justify-content:space-between;font:700 7px var(--font-space),monospace;letter-spacing:.16em;color:#658097; }
+.contact-network__head span:last-child { color:#6ee7b7; }
+.contact-network svg { width:100%;height:auto;margin:8px 0; background:repeating-linear-gradient(0deg,transparent 0 27px,rgba(148,163,184,.035) 27px 28px); }
+.contact-orbit { fill:none;stroke:#67e8f9;stroke-width:.6;stroke-opacity:.12; }
+.contact-network__stats { gap:8px; }
+.contact-network__stats span { flex:1;padding:9px;border:1px solid rgba(148,163,184,.09);background:rgba(255,255,255,.015); }
+.contact-network__stats b { display:block;color:#b9eef8;font-size:10px;margin-bottom:3px; }
+
+.ask-ai-trigger { min-height:58px; box-shadow:0 0 40px rgba(34,211,238,.18),0 14px 40px rgba(0,0,0,.5)!important; }
+.ask-ai-trigger__icon { position:relative;display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(103,232,249,.35);background:rgba(34,211,238,.1);clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%); }
+.ask-ai-trigger__icon span { position:absolute;inset:4px;border:1px dashed rgba(165,243,252,.35);border-radius:50%; }
+.chat-command::before { content:'';position:absolute;inset:0;pointer-events:none;opacity:.22;background:linear-gradient(rgba(34,211,238,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.04) 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(to bottom,#000,transparent 75%); }
+
+@media (max-width: 767px) {
+  .project-telemetry { min-height:92px; }
+  .project-telemetry svg { height:92px; }
+  .ask-ai-trigger { min-height:52px; }
+  .ask-ai-trigger__icon { width:34px;height:34px; }
 }
 
 @media (max-width: 640px) {

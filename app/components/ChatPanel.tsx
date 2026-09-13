@@ -169,16 +169,16 @@ export default function ChatPanel({
             role="dialog"
             aria-modal="true"
             aria-label="Ahmed's Engineering AI Chat Interface"
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0,  scale: 1 }}
-            exit={{  opacity: 0, y: 24,  scale: 0.97 }}
-            transition={{ type: "tween", ease: "easeOut", duration: 0.28 }}
-            className="fixed z-[999] flex flex-col overflow-hidden"
+            initial={{ opacity: 0, x: -28, scale: 0.96, filter: "blur(8px)" }}
+            animate={{ opacity: 1, x: 0,  scale: 1, filter: "blur(0px)" }}
+            exit={{  opacity: 0, x: -28,  scale: 0.96, filter: "blur(8px)" }}
+            transition={{ type: "tween", ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
+            className="fixed z-[999] flex flex-col overflow-hidden chat-command"
             style={{
               /* Mobile: fullscreen */
               inset: 0,
               /* Desktop: floating panel — overridden via media query below */
-              background: "linear-gradient(165deg, rgba(8,14,26,0.98) 0%, rgba(10,18,32,0.97) 100%)",
+              background: "radial-gradient(circle at 20% 0%, rgba(8,145,178,.16), transparent 34%), linear-gradient(165deg, rgba(5,12,24,0.99) 0%, rgba(7,16,29,0.98) 100%)",
               backdropFilter: "blur(24px)",
               WebkitBackdropFilter: "blur(24px)",
               border: "1px solid rgba(34,211,238,0.15)",
@@ -190,11 +190,11 @@ export default function ChatPanel({
             <style>{`
               @media (min-width: 768px) {
                 [role="dialog"][aria-label="Ahmed's Engineering AI Chat Interface"] {
-                  top: 1rem; right: 1rem; bottom: 1rem; left: auto;
-                  width: 440px;
-                  border-radius: 20px;
+                  top: 1.25rem; right: auto; bottom: 1.25rem; left: 1.25rem;
+                  width: min(520px, calc(100vw - 2.5rem));
+                  border-radius: 24px;
                   inset: unset;
-                  top: 1rem; right: 1rem; bottom: 1rem;
+                  top: 1.25rem; right: auto; bottom: 1.25rem; left: 1.25rem;
                 }
               }
             `}</style>
@@ -261,7 +261,7 @@ export default function ChatPanel({
                       className="text-sm font-bold text-slate-100 truncate"
                       style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "0.02em" }}
                     >
-                      Engineering AI
+                      AOQ Signal Intelligence
                     </h2>
                     <SignalBars />
                   </div>
@@ -270,7 +270,7 @@ export default function ChatPanel({
                     <p
                       className="text-[10px] font-mono text-slate-400 tracking-widest truncate uppercase"
                     >
-                      Ahmed Qadir · Online
+                      Communication Engineering Copilot · Online
                     </p>
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default function ChatPanel({
 
             {/* ─── MESSAGE AREA ─── */}
             <div
-              className="flex-1 overflow-y-auto px-4 py-3"
+              className="msg-area flex-1 overflow-y-auto px-5 py-4"
               style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(34,211,238,0.15) transparent" }}
             >
               <style>{`
@@ -352,7 +352,7 @@ export default function ChatPanel({
                 <div className="flex items-center gap-1.5 mb-2">
                   <Sparkles size={10} className="text-cyan-500" />
                   <span className="text-[9px] font-mono text-cyan-600 tracking-widest uppercase">
-                    Quick Access
+                    Start a signal
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -441,7 +441,7 @@ export default function ChatPanel({
                   className="text-[9px] font-mono uppercase tracking-widest"
                   style={{ color: "rgba(71,85,105,0.7)" }}
                 >
-                  Ahmed Qadir · Communication Engineer · SPU
+                  Grounded in Ahmed&apos;s engineering portfolio
                 </span>
               </div>
             </div>

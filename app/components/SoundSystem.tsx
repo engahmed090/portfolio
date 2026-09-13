@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Volume2, VolumeX } from "lucide-react";
+import { useEffect } from "react";
 
 // ─── Web Audio synthesis helpers ───────────────────────────────
 function createCtx(): AudioContext | null {
@@ -11,7 +10,7 @@ function createCtx(): AudioContext | null {
 }
 
 let _ctx: AudioContext | null = null;
-let _muted = true;
+const _muted = false;
 let _unlocked = false;
 
 function getCtx(): AudioContext | null {
@@ -42,10 +41,10 @@ function playTone(freq: number, type: OscillatorType, gainVal: number, durationM
 
 // ─── Public sound API ──────────────────────────────────────────
 export const Sound = {
-  click:     () => { playTone(900,  "sine",     0.06, 60,  440); },
-  hover:     () => { playTone(660,  "sine",     0.03, 40,  600); },
-  frameBlip: () => { playTone(440,  "triangle", 0.05, 120, 220); },
-  expand:    () => { playTone(1100, "sine",     0.04, 80,  550); },
+  click:     () => { playTone(740, "sine", .025, 85, 520); },
+  hover:     () => { playTone(520, "sine", .012, 55, 610); },
+  frameBlip: () => { playTone(196, "sine", .035, 240, 392); setTimeout(() => playTone(587, "sine", .018, 180, 784), 65); },
+  expand:    () => { playTone(392, "triangle", .025, 180, 659); },
 };
 
 // ─── Internal unlock helper ────────────────────────────────────
@@ -62,7 +61,7 @@ function doUnlock() {
 // ─── Unlock on VERY FIRST user gesture — auto, no button needed ─
 export function useSoundUnlock() {
   useEffect(() => {
-    const unlock = () => doUnlock();
+    const unlock = () => { doUnlock(); setTimeout(() => Sound.expand(), 40); };
 
     window.addEventListener("pointerdown", unlock, { once: true, passive: true });
     window.addEventListener("keydown",     unlock, { once: true });
@@ -78,52 +77,4 @@ export function useSoundUnlock() {
       window.removeEventListener("scroll",      unlock);
     };
   }, []);
-}
-
-// ─── Mute Toggle UI ───────────────────────────────────────────
-export function SoundToggle() {
-  const [muted, setMuted] = useState(true);
-
-  // Keep local state in sync with module-level _muted
-  const btnRef = useRef<HTMLButtonElement>(null);
-
-  const toggle = useCallback(() => {
-    _muted = !_muted;
-    setMuted(_muted);
-    if (!_muted) {
-      // Un-muting also unlocks
-      doUnlock();
-      // Give a small feedback tone
-      setTimeout(() => Sound.click(), 50);
-    }
-  }, []);
-
-  return (
-    <button
-      ref={btnRef}
-      id="sound-toggle"
-      onClick={toggle}
-      aria-label={muted ? "Enable sound effects" : "Disable sound effects"}
-      title={muted ? "Enable sounds" : "Mute sounds"}
-      style={{
-        position: "fixed",
-        bottom: "1.5rem",
-        right: "1.5rem",
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "36px",
-        height: "36px",
-        border: `1px solid ${muted ? "rgba(148,163,184,0.12)" : "rgba(168,216,240,0.3)"}`,
-        background: muted ? "rgba(14,20,32,0.7)" : "rgba(168,216,240,0.06)",
-        color: muted ? "#4A5568" : "#A8D8F0",
-        cursor: "pointer",
-        backdropFilter: "blur(8px)",
-        transition: "all 0.25s ease",
-      }}
-    >
-      {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-    </button>
-  );
 }

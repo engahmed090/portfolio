@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Layers, Shield, Leaf, Cpu, ExternalLink } from "lucide-react";
 import { Sound } from "./SoundSystem";
+import ProjectTelemetry from "./ProjectTelemetry";
 
 interface Project {
   id: string;
@@ -87,7 +88,7 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="coord-label text-slate-400 leading-normal">{project.tag}</div>
       </div>
 
-      <div className="flex-1" />
+      <ProjectTelemetry id={project.id} />
 
       {/* Tech Tags */}
       <div className="flex flex-wrap gap-1.5">
