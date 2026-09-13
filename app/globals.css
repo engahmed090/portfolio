@@ -180,6 +180,7 @@ body::before {
 
 .project-telemetry {
   position: relative;
+  flex: 1 1 auto;
   min-height: 112px;
   overflow: hidden;
   border: 1px solid rgba(103,232,249,.1);
@@ -194,7 +195,7 @@ body::before {
   position:absolute; inset:7px 9px auto; z-index:2; display:flex; justify-content:space-between;
   font:600 6px var(--font-space),monospace; letter-spacing:.16em; color:#557087;
 }
-.project-telemetry svg { width:100%; height:112px; }
+.project-telemetry svg { width:100%; height:100%; min-height:112px; }
 .project-telemetry text { fill:#668097; font:600 6px var(--font-space),monospace; letter-spacing:.12em; }
 .telemetry-grid { fill:none; stroke:#94a3b8; stroke-width:.4; opacity:.08; }
 @keyframes telemetry-scan { 0%,20%{transform:translateX(-100%)} 75%,100%{transform:translateX(100%)} }
