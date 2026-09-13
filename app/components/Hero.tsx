@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
 import AcDcSignal from "./AcDcSignal";
 import TechNodeNetwork from "./TechNodeNetwork";
@@ -46,7 +46,7 @@ export default function Hero() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden:  { opacity: 0, scale: 0.88, y: 24 },
     visible: { opacity: 1, scale: 1,    y: 0,
       transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },

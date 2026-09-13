@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Award, Globe, Briefcase, Shield, Brain, GraduationCap } from "lucide-react";
 
 const CERTIFICATES = [
@@ -91,7 +91,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden:  { opacity: 0, scale: 0.9, y: 24 },
   visible: {
     opacity: 1, scale: 1, y: 0,
@@ -181,7 +181,7 @@ export default function Certificates() {
           viewport={{ once: true, amount: 0.05 }}
           className="relative pl-8 border-l border-[rgba(148,163,184,0.15)] space-y-6"
         >
-          {CERTIFICATES.map((cert, i) => {
+          {CERTIFICATES.map((cert) => {
             const Icon = cert.Icon;
             const iconClass = colorMap[cert.color] || colorMap.sky;
             return (

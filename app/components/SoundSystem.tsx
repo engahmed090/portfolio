@@ -11,7 +11,7 @@ function createCtx(): AudioContext | null {
 }
 
 let _ctx: AudioContext | null = null;
-let _muted = false;      // ← start UN-muted so sounds play on first interaction
+let _muted = true;
 let _unlocked = false;
 
 function getCtx(): AudioContext | null {
@@ -82,7 +82,7 @@ export function useSoundUnlock() {
 
 // ─── Mute Toggle UI ───────────────────────────────────────────
 export function SoundToggle() {
-  const [muted, setMuted] = useState(false); // starts un-muted
+  const [muted, setMuted] = useState(true);
 
   // Keep local state in sync with module-level _muted
   const btnRef = useRef<HTMLButtonElement>(null);

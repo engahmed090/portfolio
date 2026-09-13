@@ -4,6 +4,7 @@ import AskMeChat from "./components/AskMeChat";
 import StructuralDiagramLayer from "./components/StructuralDiagramLayer";
 import EngineeringCanvas from "./components/EngineeringCanvas";
 import { SoundToggle } from "./components/SoundSystem";
+import SignalWaveBackground from "./components/SignalWaveBackground";
 
 export default function Home() {
   return (
@@ -65,7 +66,13 @@ export default function Home() {
       />
 
       {/* Fixed structural diagram layer */}
+      <SignalWaveBackground />
       <StructuralDiagramLayer />
+
+      <div className="system-rail" aria-hidden="true">
+        <span>AOQ / SIGNAL INTELLIGENCE</span>
+        <span className="system-rail__status"><i /> AVAILABLE FOR ENGINEERING COLLABORATION</span>
+      </div>
 
       {/* Sound toggle — fixed bottom-right */}
       <SoundToggle />

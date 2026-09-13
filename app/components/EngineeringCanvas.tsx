@@ -10,6 +10,8 @@ import {
   motion,
   AnimatePresence,
   useReducedMotion,
+  type Variants,
+  type Transition,
 } from "framer-motion";
 import FrameIdentity  from "./FrameIdentity";
 import FrameMetrics   from "./FrameMetrics";
@@ -23,37 +25,43 @@ const FRAMES = [FrameIdentity, FrameMetrics, FrameProjects, FrameContact];
 const FRAME_COUNT = FRAMES.length;
 
 // ── Smooth tween — no spring bounce ──
-const FRAME_TRANSITION = {
+const FRAME_TRANSITION: Transition = {
   type:     "tween" as const,
-  ease:     "easeInOut",
-  duration: 0.45,
+  ease:     [0.16, 1, 0.3, 1],
+  duration: 0.78,
 };
 
 // ── Per-frame transition variants ──
-const frameVariants = {
+const frameVariants: Variants = {
   entering: (dir: number) => ({
     opacity: 0,
-    y:       dir > 0 ? 30 : -30,
-    filter:  "blur(6px)",
+    y:       dir > 0 ? 90 : -90,
+    scale:   0.965,
+    rotateX: dir > 0 ? 2.5 : -2.5,
+    filter:  "blur(12px)",
   }),
   active: {
     opacity: 1,
     y:       0,
+    scale:   1,
+    rotateX: 0,
     filter:  "blur(0px)",
     transition: {
       ...FRAME_TRANSITION,
-      opacity: { duration: 0.35, ease: "easeOut" },
-      filter:  { duration: 0.30, ease: "easeOut" },
+      opacity: { duration: 0.48, ease: "easeOut" },
+      filter:  { duration: 0.5, ease: "easeOut" },
     },
   },
   exiting: (dir: number) => ({
     opacity: 0,
-    y:       dir > 0 ? -30 : 30,
-    filter:  "blur(4px)",
+    y:       dir > 0 ? -70 : 70,
+    scale:   1.025,
+    rotateX: dir > 0 ? -2 : 2,
+    filter:  "blur(10px)",
     transition: {
       ...FRAME_TRANSITION,
-      duration: 0.28,
-      opacity:  { duration: 0.2 },
+      duration: 0.42,
+      opacity:  { duration: 0.28 },
     },
   }),
 };
@@ -77,7 +85,7 @@ export default function EngineeringCanvas() {
       setIsTransitioning(true);
       Sound.frameBlip();
       setActiveFrame(nextIndex);
-      setTimeout(() => setIsTransitioning(false), 500);
+      setTimeout(() => setIsTransitioning(false), 820);
     },
     [activeFrame, isTransitioning]
   );
@@ -155,7 +163,7 @@ export default function EngineeringCanvas() {
           initial="entering"
           animate="active"
           exit="exiting"
-          style={{ position: "absolute", inset: 0, zIndex: 2 }}
+          style={{ position: "absolute", inset: 0, zIndex: 2, transformPerspective: 1400 }}
         >
           <CurrentFrame />
         </motion.div>

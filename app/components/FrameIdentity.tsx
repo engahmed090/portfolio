@@ -5,6 +5,7 @@ import { Radio, Cpu, Satellite, CircuitBoard, Waves, Activity } from "lucide-rea
 import { Sound } from "./SoundSystem";
 import Avatar from "./Avatar";
 import { MetricBadge, DownloadCVButton } from "./MetricBadge";
+import TelecomCommand from "./TelecomCommand";
 
 const STACK_TAGS = [
   { Icon: Radio,        label: "RF Systems" },
@@ -29,7 +30,7 @@ function TelecomTower() {
       opacity: 1,
       transition: { pathLength: { duration: 2.6, ease: "easeInOut" }, opacity: { duration: 0.4 } },
     },
-  };
+  } as const;
   return (
     <motion.svg
       viewBox="0 0 80 160"
@@ -72,11 +73,11 @@ function YagiAntenna() {
       pathLength: 1,
       opacity: 1,
       transition: {
-        pathLength: { duration: 2.0 + delay * 0.15, ease: "easeInOut", delay },
+        pathLength: { duration: 2.0 + delay * 0.15, ease: "easeInOut" as const, delay },
         opacity:    { duration: 0.3, delay },
       },
     }),
-  };
+  } as const;
   const elements = [
     { x: 8,  len: 56, delay: 0.2 },
     { x: 20, len: 46, delay: 0.5 },
@@ -184,7 +185,7 @@ export default function FrameIdentity() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col lg:grid lg:grid-cols-[auto_1fr_auto] gap-6 lg:gap-12 items-center my-auto w-full"
+        className="flex flex-col lg:grid lg:grid-cols-[auto_minmax(340px,1fr)_360px] gap-6 lg:gap-10 items-center my-auto w-full"
       >
         {/* Col 1: HUD Avatar */}
         <motion.div variants={itemVariants} className="flex flex-col items-center gap-2.5 shrink-0">
@@ -210,8 +211,13 @@ export default function FrameIdentity() {
             variants={itemVariants}
             className="mono text-[11px] sm:text-xs tracking-[0.2em] text-slate-400 uppercase"
           >
-            Communication Engineer
+            Communication Engineer · RF / AI Systems
           </motion.div>
+
+          <motion.p variants={itemVariants} className="identity-manifesto">
+            I engineer the invisible infrastructure—turning radio waves, intelligent sensing,
+            and embedded hardware into systems that can be measured, trusted, and deployed.
+          </motion.p>
 
           <motion.div
             variants={itemVariants}
@@ -238,26 +244,18 @@ export default function FrameIdentity() {
           </motion.div>
         </motion.div>
 
-        {/* Col 3: Stack tags */}
+        {/* Col 3: Telecom command centre */}
         <motion.div
           variants={containerVariants}
-          className="flex flex-wrap lg:flex-col justify-center lg:items-end gap-2 sm:gap-2.5 w-full min-w-0"
+          className="flex flex-col gap-3 w-full min-w-0"
         >
-          <div className="coord-label w-full lg:w-auto text-center lg:text-right mb-1">CORE STACK</div>
-          {STACK_TAGS.map((tag) => {
-            const Icon = tag.Icon;
-            return (
-              <motion.div
-                key={tag.label}
-                variants={itemVariants}
-                className="tag-pill"
-                onMouseEnter={() => Sound.hover()}
-              >
-                <Icon size={10} className="text-cyan-400 shrink-0" />
-                {tag.label}
-              </motion.div>
-            );
-          })}
+          <motion.div variants={itemVariants}><TelecomCommand /></motion.div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {STACK_TAGS.map((tag) => {
+              const Icon = tag.Icon;
+              return <motion.div key={tag.label} variants={itemVariants} className="tag-pill" onMouseEnter={() => Sound.hover()}><Icon size={10} className="text-cyan-400 shrink-0" />{tag.label}</motion.div>;
+            })}
+          </div>
         </motion.div>
       </motion.div>
 
